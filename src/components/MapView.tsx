@@ -99,8 +99,30 @@ export default function MapView({
         ]
       : []
 
+  const googleMapsUrl = selectedHub && selectedDest
+    ? `https://www.google.com/maps/dir/?api=1&origin=${selectedHub.lat},${selectedHub.lng}&destination=${selectedDest.lat},${selectedDest.lng}&travelmode=driving`
+    : selectedHub
+    ? `https://www.google.com/maps/search/?api=1&query=${selectedHub.lat},${selectedHub.lng}`
+    : selectedDest
+    ? `https://www.google.com/maps/search/?api=1&query=${selectedDest.lat},${selectedDest.lng}`
+    : 'https://www.google.com/maps'
+
   return (
     <div className="w-full h-full relative rounded-2xl overflow-hidden border border-[#262b36] shadow-md bg-[#12141a]">
+      {/* Floating Google Maps Direct Navigation Link */}
+      {selectedHub && (
+        <a
+          href={googleMapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Open in Google Maps"
+          className="absolute top-3 right-3 z-[1000] px-3 py-1.5 rounded-xl bg-[#0f1115]/90 hover:bg-[#171a21] border border-emerald-500/40 hover:border-emerald-500 text-emerald-400 hover:text-emerald-300 text-xs font-semibold shadow-lg flex items-center gap-1.5 transition backdrop-blur-md cursor-pointer group"
+        >
+          <span>Open in Google Maps</span>
+          <span className="text-[11px] group-hover:translate-x-0.5 transition-transform">↗</span>
+        </a>
+      )}
+
       <MapContainer
         center={currentCenter}
         zoom={14}
@@ -137,6 +159,14 @@ export default function MapView({
                   <div className="text-[10px] text-emerald-400 font-medium mt-0.5">
                     Pickup Stop • 300m radius
                   </div>
+                  <a
+                    href={`https://www.google.com/maps/dir/?api=1&origin=${hub.lat},${hub.lng}&destination=${selectedDest?.lat || 12.8731},${selectedDest?.lng || 77.5789}&travelmode=driving`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 block text-center py-1 px-2.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-400 text-[11px] font-semibold transition"
+                  >
+                    Open in Google Maps ↗
+                  </a>
                 </div>
               </Popup>
             </Marker>
@@ -158,6 +188,14 @@ export default function MapView({
                 <div className="text-[10px] text-sky-400 font-medium mt-0.5">
                   Campus Drop-Off
                 </div>
+                <a
+                  href={`https://www.google.com/maps/dir/?api=1&origin=${selectedHub?.lat || 12.8850},${selectedHub?.lng || 77.5730}&destination=${dest.lat},${dest.lng}&travelmode=driving`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 block text-center py-1 px-2.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-400 text-[11px] font-semibold transition"
+                >
+                  Open in Google Maps ↗
+                </a>
               </div>
             </Popup>
           </Marker>

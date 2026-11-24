@@ -654,13 +654,27 @@ export default function RVITMDashboard() {
                   </p>
                 </div>
 
-                <div className="text-right">
-                  <span className="text-xs font-bold text-emerald-400 block">
-                    {distanceData?.distanceKm ? `${distanceData.distanceKm} km` : '...'}
-                  </span>
-                  <span className="text-[10px] text-[#848b9c]">
-                    ~{distanceData?.durationMin || '...'} min drive
-                  </span>
+                <div className="flex items-center gap-3">
+                  <a
+                    href={`https://www.google.com/maps/dir/?api=1&origin=${selectedLocation.lat},${selectedLocation.lng}&destination=${DESTINATION_RVITM.lat},${DESTINATION_RVITM.lng}&travelmode=driving`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Open live navigation in Google Maps"
+                    className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-emerald-500/40 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-xs font-semibold transition shadow-sm cursor-pointer"
+                  >
+                    <Navigation size={13} />
+                    <span>Open in Google Maps</span>
+                    <span className="text-[11px]">↗</span>
+                  </a>
+
+                  <div className="text-right">
+                    <span className="text-xs font-bold text-emerald-400 block">
+                      {distanceData?.distanceKm ? `${distanceData.distanceKm} km` : '...'}
+                    </span>
+                    <span className="text-[10px] text-[#848b9c]">
+                      ~{distanceData?.durationMin || '...'} min drive
+                    </span>
+                  </div>
                 </div>
               </div>
 

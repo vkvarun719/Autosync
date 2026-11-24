@@ -21,7 +21,9 @@ import {
   DollarSign,
   UserPlus,
   RefreshCw,
-  Info
+  Info,
+  ExternalLink,
+  Navigation
 } from 'lucide-react'
 import AutoSyncLogo from '@/components/Logo'
 import type { Pool, User } from '@/types'
@@ -369,7 +371,7 @@ export default function PoolWaitingRoomPage() {
           <div className="lg:col-span-7 space-y-6">
             {/* Route & Map Card */}
             <div className="rounded-2xl border border-[#262b36] bg-[#171a21] p-5 shadow-sm space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <div className="text-xs text-[#9aa1b2]">
                     {pool.vehicleType === 'AUTO' ? '🛺 Shared Auto' : '🚕 Shared Cab'} (Max {pool.maxSeats})
@@ -379,11 +381,25 @@ export default function PoolWaitingRoomPage() {
                   </h1>
                 </div>
 
-                {pool.womenOnly && (
-                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full border border-pink-500/30 bg-pink-950/30 text-pink-300 flex items-center gap-1">
-                    <Shield size={12} /> Women Only
-                  </span>
-                )}
+                <div className="flex items-center gap-2">
+                  <a
+                    href={`https://www.google.com/maps/dir/?api=1&origin=${pool.hub.lat},${pool.hub.lng}&destination=${pool.destination.lat},${pool.destination.lng}&travelmode=driving`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Open live directions in Google Maps"
+                    className="px-3 py-1.5 rounded-xl border border-emerald-500/40 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-xs font-semibold flex items-center gap-1.5 transition shadow-sm cursor-pointer"
+                  >
+                    <Navigation size={13} />
+                    <span>Open in Google Maps</span>
+                    <ExternalLink size={12} />
+                  </a>
+
+                  {pool.womenOnly && (
+                    <span className="text-xs font-semibold px-2.5 py-1 rounded-full border border-pink-500/30 bg-pink-950/30 text-pink-300 flex items-center gap-1">
+                      <Shield size={12} /> Women Only
+                    </span>
+                  )}
+                </div>
               </div>
 
               {/* Map Preview */}
