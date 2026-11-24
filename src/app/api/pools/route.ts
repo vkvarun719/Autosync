@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { isValidRvitmEmail } from '@/app/api/auth/route'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -46,10 +47,9 @@ export async function POST(req: NextRequest) {
 
     // Restrict ride sharing to verified RVITM students
     const user = await prisma.user.findUnique({ where: { id: userId } })
-    const domain = (process.env.ALLOWED_EMAIL_DOMAIN || 'rvitm.edu.in').toLowerCase().trim()
-    if (!user || !user.email.toLowerCase().endsWith(`@${domain}`)) {
+    if (!user || !isValidRvitmEmail(user.email)) {
       return NextResponse.json(
-        { error: `Only verified RVITM students (@${domain}) can create or join rides.` },
+        { error: 'Only verified RVITM students (e.g. usn.rvitm@rvei.edu.in) can create or join rides.' },
         { status: 403 }
       )
     }

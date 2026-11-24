@@ -21,21 +21,21 @@ const RVITM_PERSONAS = [
   {
     name: 'Priya Sharma',
     role: 'CSE 3rd Year',
-    email: 'priya.sharma@rvitm.edu.in',
+    email: 'rvit22bcs085.rvitm@rvei.edu.in',
     avatar: '👩🏽‍💻',
     index: 0
   },
   {
     name: 'Rahul Verma',
     role: 'ECE 3rd Year',
-    email: 'rahul.verma@rvitm.edu.in',
+    email: 'rvit22bec042.rvitm@rvei.edu.in',
     avatar: '👨🏽‍🎓',
     index: 1
   },
   {
     name: 'Ananya Singh',
     role: 'ISE 2nd Year',
-    email: 'ananya.singh@rvitm.edu.in',
+    email: 'rvit23bis019.rvitm@rvei.edu.in',
     avatar: '👩🏽‍🔬',
     index: 2
   }
@@ -75,7 +75,11 @@ function LoginForm() {
   // Client validation for RVITM college domain
   const validateEmail = (val: string): boolean => {
     const clean = val.trim().toLowerCase()
-    return clean.endsWith('@rvitm.edu.in')
+    return (
+      clean.endsWith('.rvitm@rvei.edu.in') ||
+      clean.endsWith('@rvei.edu.in') ||
+      clean.endsWith('@rvitm.edu.in')
+    )
   }
 
   // Handle Send OTP
@@ -93,7 +97,7 @@ function LoginForm() {
     }
 
     if (!validateEmail(cleanEmail)) {
-      setErrorMessage('Please use your RVITM college email (@rvitm.edu.in).')
+      setErrorMessage('Please use your official RVITM student email (e.g. rvit25bai050.rvitm@rvei.edu.in).')
       return
     }
 
@@ -258,13 +262,13 @@ function LoginForm() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="usn.dept@rvitm.edu.in"
-                className="w-full text-sm font-medium px-4 py-3 rounded-xl border border-[#262b36] bg-[#0f1115] text-white placeholder-[#555d6e] focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition"
+                placeholder="rvit25bai050.rvitm@rvei.edu.in"
+                className="w-full text-sm font-medium px-4 py-3 rounded-xl border border-[#262b36] bg-[#0f1115] text-white placeholder-[#555d6e] focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition font-mono text-xs sm:text-sm"
               />
               <Mail size={16} className="absolute right-3.5 top-3.5 text-[#555d6e]" />
             </div>
             <p className="text-[11px] text-[#717887] mt-1.5">
-              Must end with <code className="text-emerald-400 font-mono">@rvitm.edu.in</code>
+              Format: <code className="text-emerald-400 font-mono">usn.rvitm@rvei.edu.in</code> (e.g. <span className="text-[#a1a8b8]">rvit25bai050.rvitm@rvei.edu.in</span>)
             </p>
           </div>
 

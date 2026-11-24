@@ -3,13 +3,23 @@ import { prisma } from '@/lib/prisma'
 import crypto from 'crypto'
 
 function getAllowedDomain(): string {
-  return (process.env.ALLOWED_EMAIL_DOMAIN || 'rvitm.edu.in').toLowerCase().trim()
+  return (process.env.ALLOWED_EMAIL_DOMAIN || 'rvei.edu.in').toLowerCase().trim()
 }
 
-function isValidRvitmEmail(email: string): boolean {
-  const domain = getAllowedDomain()
+export function isValidRvitmEmail(email: string): boolean {
   const cleanEmail = email.toLowerCase().trim()
-  return cleanEmail.endsWith(`@${domain}`)
+  const domain = getAllowedDomain()
+
+  // Real RVITM official email format: rvit25bai050.rvitm@rvei.edu.in
+  if (
+    cleanEmail.endsWith('.rvitm@rvei.edu.in') ||
+    cleanEmail.endsWith('@rvitm.edu.in') ||
+    cleanEmail.endsWith(`@${domain}`)
+  ) {
+    return true
+  }
+
+  return false
 }
 
 export async function POST(req: NextRequest) {
@@ -28,7 +38,7 @@ export async function POST(req: NextRequest) {
 
       if (!isValidRvitmEmail(cleanEmail)) {
         return NextResponse.json(
-          { error: `Please use your RVITM college email (@${domain}).` },
+          { error: 'Please use your official RVITM student email (e.g. rvit25bai050.rvitm@rvei.edu.in).' },
           { status: 400 }
         )
       }
@@ -85,7 +95,7 @@ export async function POST(req: NextRequest) {
 
       if (!isValidRvitmEmail(cleanEmail)) {
         return NextResponse.json(
-          { error: `Please use your RVITM college email (@${domain}).` },
+          { error: 'Please use your official RVITM student email (e.g. rvit25bai050.rvitm@rvei.edu.in).' },
           { status: 400 }
         )
       }
@@ -115,20 +125,20 @@ export async function POST(req: NextRequest) {
       // Find or create RVITM student user
       let user = await prisma.user.findUnique({ where: { email: cleanEmail } })
       if (!user) {
-        const username = cleanEmail.split('@')[0].replace(/[._-]/g, ' ')
-        const formattedName = username
-          .split(' ')
-          .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-          .join(' ')
+        // Extract USN if format is like rvit25bai050.rvitm@rvei.edu.in
+        const prefix = cleanEmail.split('@')[0]
+        const usnCandidate = prefix.split('.')[0]
+        const rollId = usnCandidate.toUpperCase()
+        const formattedName = rollId.startsWith('RVIT') ? `Student ${rollId}` : 'RVITM Student'
 
         user = await prisma.user.create({
           data: {
             email: cleanEmail,
-            name: formattedName || 'RVITM Student',
-            rollId: '1RVITM',
+            name: formattedName,
+            rollId: rollId || '1RVITM',
             gender: 'OTHER',
             collegeName: 'R V Institute of Technology and Management',
-            defaultUpiId: `${cleanEmail.split('@')[0]}@okhdfc`
+            defaultUpiId: `${cleanEmail.split('@')[0].replace(/\./g, '')}@okhdfc`
           }
         })
       }
@@ -171,9 +181,9 @@ export async function POST(req: NextRequest) {
     // 3. Demo Persona Instant Login (Pre-seeded RVITM students)
     if (action === 'demo-login') {
       const demoEmails = [
-        `priya.sharma@${domain}`,
-        `rahul.verma@${domain}`,
-        `ananya.singh@${domain}`
+        'rvit22bcs085.rvitm@rvei.edu.in',
+        'rvit22bec042.rvitm@rvei.edu.in',
+        'rvit23bis019.rvitm@rvei.edu.in'
       ]
       const personaEmail = demoEmails[body.persona ?? 0]
       let user = await prisma.user.findUnique({ where: { email: personaEmail } })
@@ -184,7 +194,7 @@ export async function POST(req: NextRequest) {
           data: {
             email: personaEmail,
             name: body.persona === 0 ? 'Priya Sharma' : body.persona === 1 ? 'Rahul Verma' : 'Ananya Singh',
-            rollId: '1RV21CS085',
+            rollId: body.persona === 0 ? 'RVIT22BCS085' : body.persona === 1 ? 'RVIT22BEC042' : 'RVIT23BIS019',
             gender: body.persona === 1 ? 'MALE' : 'FEMALE',
             collegeName: 'R V Institute of Technology and Management'
           }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { isWithinRadius, haversineDistance } from '@/lib/haversine'
+import { isValidRvitmEmail } from '@/app/api/auth/route'
 
 /**
  * Geospatial Clustering & Priority Queue Matching Engine
@@ -29,10 +30,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'User, Hub or Destination not found' }, { status: 404 })
     }
 
-    const domain = (process.env.ALLOWED_EMAIL_DOMAIN || 'rvitm.edu.in').toLowerCase().trim()
-    if (!user.email.toLowerCase().endsWith(`@${domain}`)) {
+    if (!isValidRvitmEmail(user.email)) {
       return NextResponse.json(
-        { error: `Only verified RVITM students (@${domain}) can match or join rides.` },
+        { error: 'Only verified RVITM students (e.g. usn.rvitm@rvei.edu.in) can match or join rides.' },
         { status: 403 }
       )
     }

@@ -39,37 +39,49 @@ async function main() {
   // 3. Seed RVITM Student Personas
   await prisma.user.create({
     data: {
-      email: 'priya.sharma@rvitm.edu.in',
+      email: 'rvit22bcs085.rvitm@rvei.edu.in',
       name: 'Priya Sharma',
-      rollId: '1RV21CS085',
+      rollId: 'RVIT22BCS085',
       gender: 'FEMALE',
       defaultUpiId: 'priya@okicici',
       emergencyContact: '+91-9876543210',
-      collegeName: 'RV Institute of Technology and Management'
+      collegeName: 'R V Institute of Technology and Management'
     }
   })
 
   await prisma.user.create({
     data: {
-      email: 'rahul.verma@rvitm.edu.in',
+      email: 'rvit22bec042.rvitm@rvei.edu.in',
       name: 'Rahul Verma',
-      rollId: '1RV21EC042',
+      rollId: 'RVIT22BEC042',
       gender: 'MALE',
       defaultUpiId: 'rahul@okhdfc',
       emergencyContact: '+91-9876543211',
-      collegeName: 'RV Institute of Technology and Management'
+      collegeName: 'R V Institute of Technology and Management'
     }
   })
 
   await prisma.user.create({
     data: {
-      email: 'ananya.singh@rvitm.edu.in',
+      email: 'rvit23bis019.rvitm@rvei.edu.in',
       name: 'Ananya Singh',
-      rollId: '1RV22ME015',
+      rollId: 'RVIT23BIS019',
       gender: 'FEMALE',
       defaultUpiId: 'ananya@okaxis',
       emergencyContact: '+91-9876543212',
-      collegeName: 'RV Institute of Technology and Management'
+      collegeName: 'R V Institute of Technology and Management'
+    }
+  })
+
+  // Sample student
+  await prisma.user.create({
+    data: {
+      email: 'rvit25bai050.rvitm@rvei.edu.in',
+      name: 'Student RVIT25BAI050',
+      rollId: 'RVIT25BAI050',
+      gender: 'OTHER',
+      defaultUpiId: 'rvit25bai050@okhdfc',
+      collegeName: 'R V Institute of Technology and Management'
     }
   })
 
