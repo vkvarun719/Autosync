@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id               String   @id @default(cuid())
+  email            String   @unique
+  name             String
+  rollId           String
+  gender           String
+  defaultUpiId     String?
+  emergencyContact String?
+  collegeName      String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  pools            PoolMember[]
+  ledPools         Pool[]       @relation("PoolLead")
+}
+
+model Hub {
+  id    String @id @default(cuid())
+  name  String
+  type  String
+  lat   Float
+  lng   Float
+  pools Pool[] @relation("PickupHub")
+}
+
+model Destination {
+  id    String @id @default(cuid())
+  name  String
+  lat   Float
+  lng   Float
+  pools Pool[]
+}
+
+model Pool {
+  id              String   @id @default(cuid())
+  hubId           String
+  destinationId   String
+  vehicleType     String
+  womenOnly       Boolean  @default(false)
+  status          String   @default("WAITING")
+  maxSeats        Int
+  seatsAvailable  Int
+  leadId          String?
+  totalFare       Float?
+  splitType       String?
+  vehicleNumber   String?
+  sosTriggered    Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  expiresAt       DateTime
+  hub             Hub         @relation("PickupHub", fields: [hubId], references: [id])
+  destination     Destination @relation(fields: [destinationId], references: [id])
+  lead            User?       @relation("PoolLead", fields: [leadId], references: [id])
+  members         PoolMember[]
+}
+
+model PoolMember {
+  id          String    @id @default(cuid())
+  poolId      String
+  userId      String
+  status      String    @default("JOINED")
+  shareAmt    Float?
+  joinedAt    DateTime  @default(now())
+  paidAt      DateTime?
+  quickStatus String?
+  pool        Pool @relation(fields: [poolId], references: [id])
+  user        User @relation(fields: [userId], references: [id])
+  @@unique([poolId, userId])
+}
+
+model StatusUpdate {
+  id        String   @id @default(cuid())
+  poolId    String
+  userId    String
+  message   String
+  createdAt DateTime @default(now())
+}
