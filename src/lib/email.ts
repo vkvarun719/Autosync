@@ -70,7 +70,9 @@ export async function sendOtpEmail({ toEmail, otp }: SendOtpParams): Promise<{ s
   if (smtpUser && smtpPass) {
     try {
       const transporter = nodemailer.createTransport({
-        service: process.env.SMTP_SERVICE || 'gmail',
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
         auth: {
           user: smtpUser,
           pass: smtpPass
@@ -78,9 +80,11 @@ export async function sendOtpEmail({ toEmail, otp }: SendOtpParams): Promise<{ s
       })
 
       const info = await transporter.sendMail({
-        from: `"AutoSync RVITM" <${smtpUser}>`,
+        from: `AutoSync RVITM <${smtpUser}>`,
+        replyTo: smtpUser,
         to: cleanEmail,
         subject,
+        text: `Your AutoSync RVITM 6-digit access code is: ${otp}\n\nThis code is valid for 10 minutes.\nIf you did not request this login, please ignore this email.`,
         html: htmlContent
       })
 

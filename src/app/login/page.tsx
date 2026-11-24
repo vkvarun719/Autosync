@@ -71,13 +71,14 @@ function LoginForm() {
     return `${mins}:${s < 10 ? '0' : ''}${s}`
   }
 
-  // Client validation for RVITM college domain
+  // Client validation for RVITM college domain or registered Gmail
   const validateEmail = (val: string): boolean => {
     const clean = val.trim().toLowerCase()
     return (
       clean.endsWith('.rvitm@rvei.edu.in') ||
       clean.endsWith('@rvei.edu.in') ||
       clean.endsWith('@rvitm.edu.in') ||
+      clean.endsWith('@gmail.com') ||
       clean === 'vkvarun719@gmail.com'
     )
   }
@@ -91,12 +92,12 @@ function LoginForm() {
     const cleanEmail = email.trim().toLowerCase()
 
     if (!cleanEmail) {
-      setErrorMessage('Please enter your RVITM email ID.')
+      setErrorMessage('Please enter your RVITM email or Gmail ID.')
       return
     }
 
     if (!validateEmail(cleanEmail)) {
-      setErrorMessage('Please use your official RVITM student email (e.g. rvit25bai050.rvitm@rvei.edu.in).')
+      setErrorMessage('Please use your official RVITM student email (e.g. rvit25bai050.rvitm@rvei.edu.in) or registered Gmail.')
       return
     }
 
@@ -250,7 +251,7 @@ function LoginForm() {
               <Mail size={16} className="absolute right-3.5 top-3.5 text-[#555d6e]" />
             </div>
             <p className="text-[11px] text-[#717887] mt-1.5">
-              Format: <code className="text-emerald-400 font-mono">usn.rvitm@rvei.edu.in</code> (e.g. <span className="text-[#a1a8b8]">rvit25bai050.rvitm@rvei.edu.in</span>)
+              Format: <code className="text-emerald-400 font-mono">usn.rvitm@rvei.edu.in</code> or <code className="text-emerald-400 font-mono">name@gmail.com</code>
             </p>
           </div>
 
@@ -298,6 +299,9 @@ function LoginForm() {
               />
               <KeyRound size={16} className="absolute right-3.5 top-3.5 text-[#555d6e]" />
             </div>
+            <p className="text-[11px] text-[#717887] mt-1.5 text-center">
+              Didn&apos;t see it? Please check your <span className="text-[#a1a8b8]">Spam / Junk</span> or <span className="text-[#a1a8b8]">Updates</span> folder.
+            </p>
           </div>
 
           <button

@@ -17,6 +17,11 @@ export function isValidRvitmEmail(email: string): boolean {
     return true
   }
 
+  // Allow any Gmail address for testing with peers/friends
+  if (cleanEmail.endsWith('@gmail.com')) {
+    return true
+  }
+
   // Real RVITM official email format: rvit25bai050.rvitm@rvei.edu.in
   if (
     cleanEmail.endsWith('.rvitm@rvei.edu.in') ||
@@ -50,7 +55,7 @@ export async function POST(req: NextRequest) {
         )
       }
 
-      // Rate limit check: max 5 requests per hour
+      // Rate limit check: max 20 requests per hour for active testing
       const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000)
       const attemptsCount = await prisma.otpVerification.count({
         where: {
@@ -59,9 +64,9 @@ export async function POST(req: NextRequest) {
         }
       })
 
-      if (attemptsCount >= 5) {
+      if (attemptsCount >= 20) {
         return NextResponse.json(
-          { error: 'Rate limit exceeded. Maximum 5 OTP attempts per hour.' },
+          { error: 'Rate limit exceeded. Maximum 20 OTP attempts per hour.' },
           { status: 429 }
         )
       }
@@ -84,9 +89,16 @@ export async function POST(req: NextRequest) {
         otp: generatedOtp
       })
 
+      if (!dispatch.success) {
+        return NextResponse.json(
+          { error: dispatch.error || 'Failed to dispatch email. Please verify the address and try again.' },
+          { status: 500 }
+        )
+      }
+
       return NextResponse.json({
         success: true,
-        message: `Live 6-digit access code sent to ${cleanEmail}. Please check your inbox!`,
+        message: `Live 6-digit access code sent to ${cleanEmail}. Please check your inbox (and spam/junk)!`,
         provider: dispatch.provider
       })
     }
