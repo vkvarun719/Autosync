@@ -68,3 +68,8 @@ body {
 .leaflet-popup-tip {
   background: #171a21 !important;
 }
+
+/* Sleek Dark Mode for OpenStreetMap tiles without any watermarks or API keys */
+.leaflet-tile-pane {
+  filter: invert(100%) hue-rotate(180deg) brightness(82%) contrast(96%);
+}
