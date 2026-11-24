@@ -5,20 +5,24 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-
 import L from 'leaflet'
 import type { Hub, Destination, Pool } from '@/types'
 
-// Setup clean custom icons using divIcon with radar glow and sleek badges
-const createCustomIcon = (bgColor: string, iconSymbol: string, title: string, isPulsing: boolean = false) => {
+// Setup clean custom icons using Haulix Electric Lime & Dark accents
+const createHaulixIcon = (iconSymbol: string, title: string, isAccent: boolean = false) => {
   return L.divIcon({
-    className: 'custom-map-marker-container',
+    className: 'haulix-map-marker-container',
     html: `
-      <div style="position: relative; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
-        ${
-          isPulsing
-            ? `<div style="position: absolute; width: 100%; height: 100%; border-radius: 50%; background: ${bgColor}; opacity: 0.35; animation: marker-pulse 2s infinite ease-out;"></div>`
-            : ''
-        }
+      <div style="position: relative; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;">
         <div style="
-          background: ${bgColor};
-          color: white;
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          background: ${isAccent ? '#d4e751' : '#22d3ee'};
+          opacity: 0.25;
+          animation: haulix-lime-pulse 2.2s infinite ease-out;
+        "></div>
+        <div style="
+          background: ${isAccent ? '#d4e751' : '#1e2127'};
+          color: ${isAccent ? '#0b0c0e' : '#ffffff'};
           width: 32px;
           height: 32px;
           border-radius: 50%;
@@ -26,8 +30,8 @@ const createCustomIcon = (bgColor: string, iconSymbol: string, title: string, is
           align-items: center;
           justify-content: center;
           font-size: 15px;
-          font-weight: 700;
-          box-shadow: 0 4px 14px rgba(0,0,0,0.25), 0 0 0 2px rgba(255,255,255,0.9);
+          font-weight: 800;
+          box-shadow: 0 4px 16px rgba(0,0,0,0.8), 0 0 0 2px ${isAccent ? '#d4e751' : 'rgba(255,255,255,0.15)'};
           position: relative;
           z-index: 2;
           cursor: pointer;
@@ -36,16 +40,16 @@ const createCustomIcon = (bgColor: string, iconSymbol: string, title: string, is
         </div>
       </div>
     `,
-    iconSize: [36, 36],
-    iconAnchor: [18, 18],
+    iconSize: [38, 38],
+    iconAnchor: [19, 19],
     popupAnchor: [0, -20],
   })
 }
 
-const metroIcon = createCustomIcon('linear-gradient(135deg, #4f46e5, #3730a3)', '🚊', 'Metro Hub', true)
-const busIcon = createCustomIcon('linear-gradient(135deg, #ea580c, #c2410c)', '🚌', 'Bus Station', true)
-const transitIcon = createCustomIcon('linear-gradient(135deg, #0284c7, #0369a1)', '🚉', 'Transit Hub', true)
-const campusIcon = createCustomIcon('linear-gradient(135deg, #059669, #047857)', '🏫', 'Campus Drop-off')
+const metroIcon = createHaulixIcon('🚊', 'Transit Hub (Metro)', true)
+const busIcon = createHaulixIcon('🚌', 'Bus Depot Hub', true)
+const transitIcon = createHaulixIcon('🚉', 'Transit Gate', true)
+const campusIcon = createHaulixIcon('🏫', 'Campus Drop-Off', false)
 
 function MapFlyTo({ center }: { center: [number, number] }) {
   const map = useMap()
@@ -86,7 +90,7 @@ export default function MapView({
       : []
 
   return (
-    <div className="w-full h-full relative rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm">
+    <div className="w-full h-full relative rounded-2xl overflow-hidden border border-[rgba(255,255,255,0.08)] shadow-md bg-[#15171b]">
       <MapContainer
         center={currentCenter}
         zoom={14}
@@ -94,10 +98,9 @@ export default function MapView({
         className="w-full h-full min-h-[220px]"
         zoomControl={false}
       >
-        {/* CartoDB Voyager tiles for modern classy look */}
         <TileLayer
           attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png"
         />
 
         <MapFlyTo center={currentCenter} />
@@ -118,11 +121,11 @@ export default function MapView({
             >
               <Popup>
                 <div>
-                  <div className="font-bold text-white text-xs tracking-tight">
+                  <div className="font-extrabold text-[#ffffff] text-xs tracking-tight">
                     {hub.name}
                   </div>
-                  <div className="text-[10px] text-indigo-300 uppercase tracking-widest font-semibold mt-0.5">
-                    {hub.type} TRANSIT HUB • 300M CLUSTER
+                  <div className="text-[10px] text-[#d4e751] uppercase tracking-widest font-mono font-bold mt-0.5">
+                    {hub.type} HUB • 300M RADAR
                   </div>
                 </div>
               </Popup>
@@ -139,10 +142,10 @@ export default function MapView({
           >
             <Popup>
               <div>
-                <div className="font-bold text-white text-xs tracking-tight">
+                <div className="font-extrabold text-[#ffffff] text-xs tracking-tight">
                   {dest.name}
                 </div>
-                <div className="text-[10px] text-emerald-300 font-semibold mt-0.5">
+                <div className="text-[10px] text-[#22d3ee] font-bold mt-0.5 uppercase tracking-wide">
                   CAMPUS DROP-OFF ZONE
                 </div>
               </div>
@@ -150,23 +153,21 @@ export default function MapView({
           </Marker>
         ))}
 
-        {/* Route Path Polyline with classy neon aesthetic */}
+        {/* Route Path Polyline with Haulix Electric Lime Glow */}
         {polylineCoords.length === 2 && (
           <>
-            {/* Soft Glow Underline */}
             <Polyline
               positions={polylineCoords}
               pathOptions={{
-                color: '#6366f1',
-                weight: 8,
-                opacity: 0.25,
+                color: '#d4e751',
+                weight: 7,
+                opacity: 0.2,
               }}
             />
-            {/* Crisp Dashed Route Line */}
             <Polyline
               positions={polylineCoords}
               pathOptions={{
-                color: '#4f46e5',
+                color: '#d4e751',
                 weight: 3.5,
                 dashArray: '6, 8',
                 opacity: 0.95,
@@ -176,19 +177,19 @@ export default function MapView({
         )}
       </MapContainer>
 
-      {/* Classy Glass Legend Overlay */}
-      <div className="absolute bottom-2.5 right-2.5 z-[400] bg-slate-900/85 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/15 text-[10px] shadow-lg flex items-center gap-3 text-white">
-        <span className="flex items-center gap-1.5 font-medium">
-          <span className="w-2 h-2 rounded-full bg-indigo-400 ring-2 ring-indigo-400/40 inline-block animate-pulse" />
-          <span>Hub</span>
+      {/* Haulix Telemetry Legend Overlay */}
+      <div className="absolute bottom-2.5 right-2.5 z-[400] bg-[#17191d]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-[rgba(255,255,255,0.08)] text-[10px] shadow-xl flex items-center gap-3 text-[#ffffff]">
+        <span className="flex items-center gap-1.5 font-semibold">
+          <span className="w-2 h-2 rounded-full bg-[#d4e751] ring-2 ring-[#d4e751]/30 inline-block animate-pulse" />
+          <span>Transit Hub</span>
         </span>
-        <span className="flex items-center gap-1.5 font-medium">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
+        <span className="flex items-center gap-1.5 font-semibold">
+          <span className="w-2 h-2 rounded-full bg-[#22d3ee] inline-block" />
           <span>Campus</span>
         </span>
         {pools.length > 0 && (
-          <span className="font-semibold text-indigo-300 border-l border-white/20 pl-2">
-            {pools.length} Active Pool{pools.length > 1 ? 's' : ''}
+          <span className="font-mono font-bold text-[#d4e751] border-l border-[rgba(255,255,255,0.1)] pl-2">
+            {pools.length} LIVE POOL{pools.length > 1 ? 'S' : ''}
           </span>
         )}
       </div>

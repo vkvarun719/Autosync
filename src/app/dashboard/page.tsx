@@ -20,16 +20,21 @@ import {
   ChevronRight,
   Filter,
   Zap,
-  ArrowUpRight
+  ArrowUpRight,
+  Radio,
+  Sliders,
+  Check,
+  Activity,
+  Layers
 } from 'lucide-react'
 import type { User, Hub, Destination, Pool } from '@/types'
 
 const MapView = dynamic(() => import('@/components/MapView'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-full min-h-[220px] bg-slate-900/5 backdrop-blur-md rounded-2xl flex flex-col items-center justify-center text-slate-500 text-xs gap-2 border border-slate-200">
-      <Loader2 size={18} className="animate-spin text-indigo-600" />
-      <span className="font-medium">Connecting to campus transit nodes...</span>
+    <div className="w-full h-full min-h-[220px] bg-[#15171b] rounded-2xl flex flex-col items-center justify-center text-[#8e95a0] text-xs gap-2 border border-[rgba(255,255,255,0.08)]">
+      <Loader2 size={18} className="animate-spin text-[#d4e751]" />
+      <span className="font-mono text-[11px]">Connecting to campus transit nodes...</span>
     </div>
   ),
 })
@@ -109,7 +114,6 @@ export default function CommuterDashboard() {
     router.push('/')
   }
 
-  // Handle Find or Create Pool with Matching Engine
   const handleMatchPool = async () => {
     if (!currentUser || !selectedHubId || !selectedDestId) {
       setAlertMsg({ type: 'error', text: 'Please pick a Pickup Hub and Campus Drop-off.' })
@@ -158,33 +162,33 @@ export default function CommuterDashboard() {
 
   if (loadingInitial) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-6 text-slate-500 bg-white">
-        <Loader2 size={32} className="animate-spin text-indigo-600 mb-3" />
-        <p className="text-xs font-bold tracking-tight text-slate-800">Connecting to AutoSync Network...</p>
-        <p className="text-[10px] text-slate-400 mt-1">Calibrating 300m geospatial clusters</p>
+      <div className="flex-1 flex flex-col items-center justify-center p-6 text-[#8e95a0] bg-[#121417]">
+        <Loader2 size={32} className="animate-spin text-[#d4e751] mb-3" />
+        <p className="text-xs font-mono font-bold text-white">INITIALIZING HAULIX FLEET TELEMETRY...</p>
+        <p className="text-[10px] text-[#525866] font-mono mt-1">Calibrating 300m spatial clusters</p>
       </div>
     )
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-slate-50">
-      {/* Sleek Classy Header */}
-      <div className="bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-xs">
+    <div className="flex-1 flex flex-col bg-[#121417] text-[#ffffff]">
+      {/* Haulix Top Telemetry Header */}
+      <div className="bg-[#17191d]/95 backdrop-blur-md border-b border-[rgba(255,255,255,0.08)] px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-md">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-700 to-violet-600 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-indigo-500/20">
+          <div className="w-9 h-9 rounded-2xl bg-[#d4e751] text-[#0b0c0e] flex items-center justify-center font-black text-sm shadow-md shadow-[#d4e751]/30">
             ⚡
           </div>
           <div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs font-extrabold text-slate-900 leading-tight">
-                AutoSync
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-black text-white leading-tight">
+                AutoSync Fleet
               </span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#10b981] inline-block animate-pulse" />
             </div>
-            <div className="text-[10px] text-slate-500 flex items-center gap-1 font-medium mt-0.5">
+            <div className="text-[10px] text-[#8e95a0] flex items-center gap-1 font-mono mt-0.5">
               <span>{currentUser?.name}</span>
-              <span className="text-slate-300">•</span>
-              <span className="font-mono text-indigo-700 font-bold">{currentUser?.rollId}</span>
+              <span className="text-[#525866]">•</span>
+              <span className="text-[#d4e751] font-bold">{currentUser?.rollId}</span>
             </div>
           </div>
         </div>
@@ -193,14 +197,14 @@ export default function CommuterDashboard() {
           <button
             onClick={() => { setRefreshing(true); fetchData(); }}
             title="Refresh active pools"
-            className="w-8 h-8 rounded-xl border border-slate-200 bg-slate-50/80 hover:bg-white flex items-center justify-center text-slate-500 hover:text-indigo-600 transition shadow-xs"
+            className="w-8 h-8 rounded-full border border-[rgba(255,255,255,0.08)] bg-[#1e2127] hover:border-[#d4e751] flex items-center justify-center text-[#8e95a0] hover:text-[#d4e751] transition shadow-xs"
           >
-            <RefreshCw size={13} className={refreshing ? 'animate-spin text-indigo-600' : ''} />
+            <RefreshCw size={13} className={refreshing ? 'animate-spin text-[#d4e751]' : ''} />
           </button>
           <button
             onClick={handleLogout}
             title="Log Out"
-            className="w-8 h-8 rounded-xl border border-slate-200 bg-slate-50/80 hover:bg-rose-50 hover:border-rose-200 flex items-center justify-center text-slate-400 hover:text-rose-600 transition shadow-xs"
+            className="w-8 h-8 rounded-full border border-[rgba(255,255,255,0.08)] bg-[#1e2127] hover:bg-[#251214] hover:border-[#ef4444]/60 flex items-center justify-center text-[#8e95a0] hover:text-[#f87171] transition shadow-xs"
           >
             <LogOut size={13} />
           </button>
@@ -208,20 +212,36 @@ export default function CommuterDashboard() {
       </div>
 
       <div className="p-4 space-y-4 flex-1">
-        {/* Interactive Map with Card Header */}
+        {/* Haulix Top Metric Strip */}
+        <div className="flex gap-2 overflow-x-auto pb-1 text-[10px] font-mono">
+          <div className="bg-[#17191d] border border-[rgba(255,255,255,0.08)] rounded-full px-3 py-1 flex items-center gap-1.5 whitespace-nowrap shadow-xs">
+            <span className="text-[#8e95a0]">Active Pools:</span>
+            <span className="text-white font-bold">{activePools.length} Live</span>
+          </div>
+          <div className="bg-[#17191d] border border-[rgba(255,255,255,0.08)] rounded-full px-3 py-1 flex items-center gap-1.5 whitespace-nowrap shadow-xs">
+            <span className="text-[#8e95a0]">Radar:</span>
+            <span className="text-[#d4e751] font-bold">300m Cluster</span>
+          </div>
+          <div className="bg-[#17191d] border border-[rgba(255,255,255,0.08)] rounded-full px-3 py-1 flex items-center gap-1.5 whitespace-nowrap shadow-xs">
+            <span className="text-[#8e95a0]">Fee:</span>
+            <span className="text-[#22d3ee] font-bold">Zero Comm.</span>
+          </div>
+        </div>
+
+        {/* Dark Fleet Radar Map */}
         <div>
           <div className="flex items-center justify-between mb-2 px-0.5">
-            <span className="text-[11px] font-extrabold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
-              <Navigation size={13} className="text-indigo-600" />
-              <span>Campus Transit Map</span>
+            <span className="text-[10px] font-mono font-extrabold text-[#8e95a0] uppercase tracking-wider flex items-center gap-1.5">
+              <Navigation size={12} className="text-[#d4e751]" />
+              <span>Campus Fleet Radar</span>
             </span>
-            <div className="flex items-center gap-1 text-[10px] text-indigo-700 bg-indigo-50 border border-indigo-200/80 px-2.5 py-0.5 rounded-full font-bold">
-              <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 inline-block" />
-              <span>300m Cluster Active</span>
+            <div className="flex items-center gap-1 text-[10px] text-[#d4e751] bg-[#d4e751]/10 border border-[#d4e751]/30 px-2.5 py-0.5 rounded-full font-mono font-bold">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#d4e751] inline-block" />
+              <span>300M RADAR CLUSTER</span>
             </div>
           </div>
 
-          <div className="h-52 w-full rounded-2xl overflow-hidden shadow-xs border border-slate-200">
+          <div className="h-52 w-full rounded-2xl overflow-hidden shadow-xl border border-[rgba(255,255,255,0.08)]">
             <MapView
               hubs={hubs}
               destinations={destinations}
@@ -232,39 +252,39 @@ export default function CommuterDashboard() {
           </div>
         </div>
 
-        {/* Commute Route Configurator Card */}
-        <div className="bg-white rounded-3xl p-5 border border-slate-200/90 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <div className="text-xs font-extrabold text-slate-900 flex items-center gap-2">
-              <div className="w-6 h-6 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold">
+        {/* Haulix Commute Route Configurator Card */}
+        <div className="bg-[#17191d] rounded-3xl p-5 border border-[rgba(255,255,255,0.08)] shadow-xl space-y-4">
+          <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.08)] pb-3">
+            <div className="text-xs font-black text-white flex items-center gap-2">
+              <div className="w-6 h-6 rounded-lg bg-[#1e2127] text-[#d4e751] flex items-center justify-center font-bold">
                 <MapPin size={13} />
               </div>
-              <span>Coordinate Your Shared Ride</span>
+              <span>Configure Commute Dispatch</span>
             </div>
-            <span className="text-[10px] text-slate-400 font-semibold bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200/60">
-              10-min window
+            <span className="text-[9px] font-mono text-[#8e95a0] font-bold bg-[#1e2127] px-2 py-0.5 rounded border border-[rgba(255,255,255,0.08)]">
+              10-MIN WINDOW
             </span>
           </div>
 
           {/* Pickup Hub Select */}
           <div>
-            <label className="block text-[11px] font-bold text-slate-700 mb-1.5">
-              Pickup Transit Hub
+            <label className="block text-[10px] font-mono font-extrabold text-[#8e95a0] uppercase mb-1.5">
+              Transit Hub (Gate Pickup)
             </label>
             <div className="relative">
               <select
                 value={selectedHubId}
                 onChange={(e) => setSelectedHubId(e.target.value)}
-                className="w-full text-xs font-semibold px-3.5 py-3 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/10 outline-none transition shadow-xs appearance-none"
+                className="w-full text-xs font-semibold px-3.5 py-3 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#1e2127] text-white hover:border-[rgba(255,255,255,0.2)] focus:border-[#d4e751] focus:ring-1 focus:ring-[#d4e751] outline-none transition appearance-none"
               >
                 {hubs.map((hub) => (
-                  <option key={hub.id} value={hub.id}>
+                  <option key={hub.id} value={hub.id} className="bg-[#17191d] text-white">
                     {hub.type === 'METRO' ? '🚊 ' : hub.type === 'BUS' ? '🚌 ' : '🚉 '}
                     {hub.name}
                   </option>
                 ))}
               </select>
-              <div className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+              <div className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[#8e95a0]">
                 ▾
               </div>
             </div>
@@ -272,113 +292,113 @@ export default function CommuterDashboard() {
 
           {/* Campus Drop-off Select */}
           <div>
-            <label className="block text-[11px] font-bold text-slate-700 mb-1.5">
+            <label className="block text-[10px] font-mono font-extrabold text-[#8e95a0] uppercase mb-1.5">
               Campus Destination Drop-Off
             </label>
             <div className="relative">
               <select
                 value={selectedDestId}
                 onChange={(e) => setSelectedDestId(e.target.value)}
-                className="w-full text-xs font-semibold px-3.5 py-3 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/10 outline-none transition shadow-xs appearance-none"
+                className="w-full text-xs font-semibold px-3.5 py-3 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#1e2127] text-white hover:border-[rgba(255,255,255,0.2)] focus:border-[#d4e751] focus:ring-1 focus:ring-[#d4e751] outline-none transition appearance-none"
               >
                 {destinations.map((dest) => (
-                  <option key={dest.id} value={dest.id}>
+                  <option key={dest.id} value={dest.id} className="bg-[#17191d] text-white">
                     🏫 {dest.name}
                   </option>
                 ))}
               </select>
-              <div className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+              <div className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[#8e95a0]">
                 ▾
               </div>
             </div>
           </div>
 
-          {/* Vehicle Capacity (Auto vs Cab) */}
+          {/* Vehicle Capacity (Haulix Fleet Blocks) */}
           <div>
-            <label className="block text-[11px] font-bold text-slate-700 mb-2">
-              Vehicle Capacity (Strict RTO Limits)
+            <label className="block text-[10px] font-mono font-extrabold text-[#8e95a0] uppercase mb-2">
+              Vehicle Capacity (Atomic RTO Limits)
             </label>
             <div className="grid grid-cols-2 gap-2.5">
-              {/* AUTO OPTION */}
+              {/* AUTO */}
               <button
                 type="button"
                 onClick={() => setVehicleType('AUTO')}
                 className={`py-3 px-3.5 rounded-2xl border text-left transition-all duration-200 ${
                   vehicleType === 'AUTO'
-                    ? 'border-indigo-600 bg-gradient-to-br from-indigo-50/90 to-purple-50/50 text-indigo-950 shadow-sm ring-2 ring-indigo-600/20'
-                    : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                    ? 'border-[#d4e751] bg-[#1e231b] text-white shadow-md ring-1 ring-[#d4e751]/50'
+                    : 'border-[rgba(255,255,255,0.08)] bg-[#1e2127] text-[#8e95a0] hover:border-[rgba(255,255,255,0.2)]'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-extrabold text-xs flex items-center gap-1.5">
+                  <span className="font-extrabold text-xs text-white flex items-center gap-1.5">
                     <span>🛺</span>
                     <span>Auto</span>
                   </span>
-                  <span className="text-[9px] bg-amber-100 text-amber-800 font-extrabold px-2 py-0.5 rounded-full border border-amber-200">
+                  <span className="text-[9px] bg-[#27301c] text-[#d4e751] font-mono font-extrabold px-1.5 py-0.5 rounded border border-[#d4e751]/30">
                     Max 3
                   </span>
                 </div>
-                <div className="flex items-center gap-1 text-[10px] text-slate-500 font-medium">
-                  <span className="text-indigo-600 font-bold">● ● ●</span>
+                <div className="flex items-center gap-1.5 text-[10px] text-[#8e95a0] font-mono">
+                  <span className="text-[#d4e751]">● ● ●</span>
                   <span>Seats</span>
                 </div>
               </button>
 
-              {/* CAB OPTION */}
+              {/* CAB */}
               <button
                 type="button"
                 onClick={() => setVehicleType('CAB')}
                 className={`py-3 px-3.5 rounded-2xl border text-left transition-all duration-200 ${
                   vehicleType === 'CAB'
-                    ? 'border-indigo-600 bg-gradient-to-br from-indigo-50/90 to-purple-50/50 text-indigo-950 shadow-sm ring-2 ring-indigo-600/20'
-                    : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                    ? 'border-[#22d3ee] bg-[#15252b] text-white shadow-md ring-1 ring-[#22d3ee]/50'
+                    : 'border-[rgba(255,255,255,0.08)] bg-[#1e2127] text-[#8e95a0] hover:border-[rgba(255,255,255,0.2)]'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-extrabold text-xs flex items-center gap-1.5">
+                  <span className="font-extrabold text-xs text-white flex items-center gap-1.5">
                     <span>🚕</span>
                     <span>Cab</span>
                   </span>
-                  <span className="text-[9px] bg-indigo-100 text-indigo-800 font-extrabold px-2 py-0.5 rounded-full border border-indigo-200">
+                  <span className="text-[9px] bg-[#16272e] text-[#22d3ee] font-mono font-extrabold px-1.5 py-0.5 rounded border border-[#22d3ee]/30">
                     Max 4
                   </span>
                 </div>
-                <div className="flex items-center gap-1 text-[10px] text-slate-500 font-medium">
-                  <span className="text-indigo-600 font-bold">● ● ● ●</span>
+                <div className="flex items-center gap-1.5 text-[10px] text-[#8e95a0] font-mono">
+                  <span className="text-[#22d3ee]">● ● ● ●</span>
                   <span>Seats</span>
                 </div>
               </button>
             </div>
           </div>
 
-          {/* Women-Only Pool Card Toggle */}
+          {/* Women-Only Commute Pool Toggle */}
           <div className="pt-1">
             <div
               onClick={() => setWomenOnly(!womenOnly)}
               className={`flex items-center justify-between p-3.5 rounded-2xl border cursor-pointer transition-all duration-200 ${
                 womenOnly
-                  ? 'border-pink-300 bg-gradient-to-r from-pink-50 to-rose-50/50 shadow-xs'
-                  : 'border-slate-200 bg-slate-50/60 hover:bg-slate-100/60'
+                  ? 'border-pink-500/60 bg-[#25131f] shadow-md'
+                  : 'border-[rgba(255,255,255,0.08)] bg-[#1e2127] hover:border-[rgba(255,255,255,0.2)]'
               }`}
             >
               <div className="flex items-center gap-3">
                 <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold ${
-                  womenOnly ? 'bg-pink-600 text-white shadow-xs' : 'bg-slate-200 text-slate-600'
+                  womenOnly ? 'bg-pink-600 text-white shadow-xs' : 'bg-[#17191d] text-[#8e95a0]'
                 }`}>
                   <Shield size={15} />
                 </div>
                 <div>
-                  <div className={`text-xs font-bold ${womenOnly ? 'text-pink-900' : 'text-slate-800'}`}>
+                  <div className={`text-xs font-bold ${womenOnly ? 'text-pink-200' : 'text-white'}`}>
                     Women-Only Commute Pool
                   </div>
-                  <div className={`text-[10px] ${womenOnly ? 'text-pink-700' : 'text-slate-500'}`}>
-                    Match exclusively with verified female riders
+                  <div className="text-[10px] text-[#8e95a0]">
+                    Match exclusively with verified female commuters
                   </div>
                 </div>
               </div>
 
               <div className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors duration-200 ${
-                womenOnly ? 'bg-pink-600' : 'bg-slate-300'
+                womenOnly ? 'bg-pink-600' : 'bg-[#17191d]'
               }`}>
                 <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ${
                   womenOnly ? 'translate-x-5' : 'translate-x-0'
@@ -391,8 +411,8 @@ export default function CommuterDashboard() {
             <div
               className={`p-3.5 rounded-2xl text-xs flex items-center gap-2.5 ${
                 alertMsg.type === 'error'
-                  ? 'bg-rose-50 border border-rose-200 text-rose-700'
-                  : 'bg-emerald-50 border border-emerald-200 text-emerald-800'
+                  ? 'bg-[#251214] border border-[#ef4444]/60 text-[#fca5a5]'
+                  : 'bg-[#122218] border border-[#10b981]/60 text-[#86efac]'
               }`}
             >
               <AlertCircle size={16} className="shrink-0" />
@@ -400,49 +420,49 @@ export default function CommuterDashboard() {
             </div>
           )}
 
-          {/* Match / Create Button with Glossy Gradient */}
+          {/* Haulix Electric Lime CTA Button */}
           <button
             onClick={handleMatchPool}
             disabled={matchingLoading}
-            className="w-full py-4 bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-700 hover:from-indigo-700 hover:to-violet-800 text-white font-extrabold text-xs rounded-2xl shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2 transition-all duration-200 disabled:opacity-50"
+            className="w-full py-4 btn-haulix-lime text-xs flex items-center justify-center gap-2 uppercase tracking-wider font-black disabled:opacity-50"
           >
             {matchingLoading ? (
               <>
-                <Loader2 size={16} className="animate-spin" />
+                <Loader2 size={16} className="animate-spin text-[#0b0c0e]" />
                 <span>Running Geospatial Match Engine...</span>
               </>
             ) : (
               <>
-                <Sparkles size={16} className="text-amber-300" />
-                <span>Find or Create Priority Pool</span>
+                <Zap size={16} className="text-[#0b0c0e]" />
+                <span>Initiate Priority Commute Pool</span>
                 <ArrowRight size={14} />
               </>
             )}
           </button>
         </div>
 
-        {/* Active Nearby Pools List */}
+        {/* Active Pools Feed (Haulix Convoys) */}
         <div>
           <div className="flex items-center justify-between mb-3 px-1">
-            <span className="text-[11px] font-extrabold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
-              <Users size={13} className="text-indigo-600" />
-              <span>Active Waiting Pools ({activePools.length})</span>
+            <span className="text-[10px] font-mono font-extrabold text-[#8e95a0] uppercase tracking-wider flex items-center gap-1.5">
+              <Users size={12} className="text-[#d4e751]" />
+              <span>Active Commute Convoys ({activePools.length})</span>
             </span>
-            <span className="text-[10px] text-slate-400 font-medium">
-              Live updates
+            <span className="text-[10px] font-mono text-[#d4e751]">
+              Live 4s sync
             </span>
           </div>
 
           {activePools.length === 0 ? (
-            <div className="bg-white border border-dashed border-slate-200 rounded-3xl p-8 text-center shadow-xs">
-              <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto text-2xl mb-2.5">
+            <div className="bg-[#17191d] border border-dashed border-[rgba(255,255,255,0.08)] rounded-3xl p-8 text-center shadow-sm">
+              <div className="w-12 h-12 rounded-2xl bg-[#1e2127] border border-[rgba(255,255,255,0.06)] text-[#d4e751] flex items-center justify-center mx-auto text-2xl mb-2.5">
                 🛺
               </div>
-              <p className="text-xs font-bold text-slate-800">
+              <p className="text-xs font-bold text-white">
                 No active pools at this hub
               </p>
-              <p className="text-[11px] text-slate-400 mt-1 max-w-[240px] mx-auto leading-relaxed">
-                Click &quot;Find or Create Priority Pool&quot; above to initiate a new pool and claim the Ride Lead!
+              <p className="text-[11px] text-[#8e95a0] mt-1 max-w-[240px] mx-auto leading-relaxed">
+                Click &quot;Initiate Priority Commute Pool&quot; above to lead the pool!
               </p>
             </div>
           ) : (
@@ -456,64 +476,64 @@ export default function CommuterDashboard() {
                   <div
                     key={pool.id}
                     onClick={() => router.push(`/pool/${pool.id}`)}
-                    className="group bg-white border border-slate-200 hover:border-indigo-500 p-4 rounded-2xl shadow-xs hover:shadow-md transition-all duration-200 cursor-pointer"
+                    className="group bg-[#17191d] border border-[rgba(255,255,255,0.08)] hover:border-[#d4e751] p-4 rounded-2xl shadow-md transition-all duration-200 cursor-pointer"
                   >
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-extrabold text-slate-900 group-hover:text-indigo-600 transition-colors">
+                        <span className="text-xs font-extrabold text-white group-hover:text-[#d4e751] transition-colors">
                           {pool.hub.name}
                         </span>
-                        <ChevronRight size={13} className="text-slate-400" />
-                        <span className="text-xs font-bold text-indigo-700">
+                        <ChevronRight size={13} className="text-[#525866]" />
+                        <span className="text-xs font-bold text-[#d4e751]">
                           {pool.destination.name}
                         </span>
                       </div>
 
                       <span
-                        className={`text-[9px] font-extrabold px-2 py-0.5 rounded-full ${
+                        className={`text-[9px] font-mono font-extrabold px-2 py-0.5 rounded ${
                           isFull
-                            ? 'bg-rose-50 text-rose-700 border border-rose-200'
-                            : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                            ? 'bg-[#251214] text-[#f87171] border border-[#ef4444]/50'
+                            : 'bg-[#122218] text-[#10b981] border border-[#10b981]/50'
                         }`}
                       >
                         {isFull ? 'FULL' : `${pool.seatsAvailable} LEFT`}
                       </span>
                     </div>
 
-                    {/* Progress bar visual */}
-                    <div className="w-full bg-slate-100 rounded-full h-1.5 mb-2.5 overflow-hidden">
+                    {/* Capacity Telemetry Bar */}
+                    <div className="w-full bg-[#1e2127] rounded-full h-1.5 mb-2.5 overflow-hidden">
                       <div
-                        className="bg-indigo-600 h-1.5 rounded-full transition-all duration-300"
+                        className="bg-[#d4e751] h-1.5 rounded-full transition-all duration-300"
                         style={{ width: `${percentFilled}%` }}
                       />
                     </div>
 
-                    <div className="flex items-center justify-between text-[11px] text-slate-500">
+                    <div className="flex items-center justify-between text-[11px] text-[#8e95a0]">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-slate-800">
+                        <span className="font-mono font-bold text-white">
                           {pool.vehicleType === 'AUTO' ? '🛺 Auto (3)' : '🚕 Cab (4)'}
                         </span>
                         <span>•</span>
-                        <span>
-                          {pool.members.length}/{pool.maxSeats} Commuters
+                        <span className="font-mono">
+                          {pool.members.length}/{pool.maxSeats} Riders
                         </span>
                         {pool.womenOnly && (
                           <>
                             <span>•</span>
-                            <span className="text-pink-600 font-bold flex items-center gap-0.5">
+                            <span className="text-pink-400 font-bold flex items-center gap-0.5">
                               <Shield size={10} /> Women Pool
                             </span>
                           </>
                         )}
                       </div>
 
-                      <div className="flex items-center gap-1 text-indigo-600 font-bold text-xs">
+                      <div className="flex items-center gap-1 text-[#d4e751] font-mono font-bold text-xs">
                         {isMyPool ? (
-                          <span className="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-md font-bold text-[10px]">
-                            Joined
+                          <span className="bg-[#1e231b] text-[#d4e751] px-2 py-0.5 rounded font-mono font-bold text-[10px] border border-[#d4e751]/30">
+                            You Joined
                           </span>
                         ) : (
-                          <span className="flex items-center gap-0.5">
+                          <span className="flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
                             Join <ArrowUpRight size={12} />
                           </span>
                         )}

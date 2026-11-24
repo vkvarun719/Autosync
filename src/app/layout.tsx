@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'AutoSync • Hyper-Local Smart Campus Mobility',
-  description: 'Coordinate shared auto-rickshaw and cab commutes from transit hubs to campus with zero commission and RTO compliance.',
+  title: 'AutoSync • Haulix Campus Logistics Fleet',
+  description: 'Hyper-local smart campus mobility platform with zero commission, dynamic UPI settlement, and RTO compliance.',
 }
 
 export const viewport: Viewport = {
@@ -11,7 +11,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: '#4f46e5',
+  themeColor: '#0b0c0e',
 }
 
 export default function RootLayout({
@@ -20,12 +20,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap"
           rel="stylesheet"
         />
         <link
@@ -35,8 +35,10 @@ export default function RootLayout({
           crossOrigin=""
         />
       </head>
-      <body className="min-h-screen text-slate-900 antialiased selection:bg-indigo-600 selection:text-white flex items-center justify-center p-0 sm:py-6">
-        <main className="w-full max-w-md min-h-screen sm:min-h-[840px] sm:rounded-[2.5rem] bg-white shadow-2xl shadow-slate-950/20 relative overflow-hidden flex flex-col border border-slate-200/80">
+      <body className="bg-[#0b0c0e] text-[#ffffff] antialiased selection:bg-[#d4e751] selection:text-[#0b0c0e] flex items-center justify-center p-0 sm:py-6">
+        <main className="w-full max-w-md min-h-screen sm:min-h-[850px] sm:rounded-[2.5rem] bg-[#121417] shadow-2xl shadow-black relative overflow-hidden flex flex-col border border-[rgba(255,255,255,0.08)]">
+          {/* Top Haulix Electric Lime Accent Glow */}
+          <div className="hidden sm:block absolute top-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-[#d4e751] to-transparent rounded-full opacity-70 z-50 shadow-sm shadow-[#d4e751]" />
           {children}
         </main>
       </body>

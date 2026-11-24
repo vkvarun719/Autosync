@@ -18,7 +18,9 @@ import {
   GraduationCap,
   Zap,
   MapPin,
-  Car
+  Car,
+  Activity,
+  Layers
 } from 'lucide-react'
 import type { User } from '@/types'
 
@@ -32,7 +34,7 @@ const DEMO_PERSONAS = [
     upi: 'priya@okicici',
     index: 0,
     badge: 'Ride Lead',
-    gradient: 'from-purple-500/10 to-indigo-500/10 border-indigo-200'
+    telemetry: '99.4% On-Time'
   },
   {
     name: 'Rahul Verma',
@@ -43,7 +45,7 @@ const DEMO_PERSONAS = [
     upi: 'rahul@okhdfc',
     index: 1,
     badge: 'Co-Rider',
-    gradient: 'from-blue-500/10 to-cyan-500/10 border-blue-200'
+    telemetry: 'Active Commuter'
   },
   {
     name: 'Ananya Singh',
@@ -54,7 +56,7 @@ const DEMO_PERSONAS = [
     upi: 'ananya@okaxis',
     index: 2,
     badge: 'Women Pool',
-    gradient: 'from-pink-500/10 to-rose-500/10 border-pink-200'
+    telemetry: 'Verified Safe'
   }
 ]
 
@@ -107,7 +109,7 @@ export default function LandingAuthPage() {
       localStorage.setItem('autosync_user', JSON.stringify(data.user))
       if (data.token) localStorage.setItem('autosync_token', data.token)
 
-      setSuccessMessage(`Welcome back, ${data.user.name}! Entering campus network...`)
+      setSuccessMessage(`Access granted for ${data.user.name}. Entering Haulix Fleet...`)
       setTimeout(() => {
         router.push('/dashboard')
       }, 400)
@@ -125,7 +127,7 @@ export default function LandingAuthPage() {
 
     const validDomain = /\.(edu|edu\.in|ac\.in)$/i.test(email.trim())
     if (!validDomain) {
-      setErrorMessage('Institutional check: Email must belong to an educational domain (.edu, .edu.in, or .ac.in)')
+      setErrorMessage('Institutional gate: Email domain must be .edu, .edu.in, or .ac.in')
       return
     }
 
@@ -157,7 +159,7 @@ export default function LandingAuthPage() {
       localStorage.setItem('autosync_user', JSON.stringify(data.user))
       if (data.token) localStorage.setItem('autosync_token', data.token)
 
-      setSuccessMessage('Verified institutional credentials! Entering...')
+      setSuccessMessage('Institutional credentials verified! Entering...')
       setTimeout(() => {
         router.push('/dashboard')
       }, 400)
@@ -169,84 +171,84 @@ export default function LandingAuthPage() {
   }
 
   return (
-    <div className="flex-1 flex flex-col justify-between p-5 bg-gradient-to-b from-slate-50 via-white to-slate-100">
+    <div className="flex-1 flex flex-col justify-between p-5 bg-[#121417] text-[#ffffff]">
       <div className="pt-2">
-        {/* Brand Header */}
+        {/* Haulix Top Telemetry Header */}
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-700 via-indigo-600 to-violet-500 text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-indigo-500/25 ring-2 ring-indigo-500/20">
+            <div className="w-10 h-10 rounded-2xl bg-[#d4e751] text-[#0b0c0e] flex items-center justify-center font-black text-lg shadow-md shadow-[#d4e751]/30">
               ⚡
             </div>
             <div>
-              <div className="flex items-center gap-1.5">
-                <h1 className="text-xl font-extrabold tracking-tight text-slate-900 leading-none">
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl font-black tracking-tight text-white leading-none">
                   AutoSync
                 </h1>
-                <span className="text-[9px] bg-indigo-50 text-indigo-700 font-extrabold px-1.5 py-0.5 rounded-full border border-indigo-200 tracking-wide uppercase">
-                  v2.0
+                <span className="text-[9px] bg-[#1e2127] text-[#d4e751] font-mono font-extrabold px-1.5 py-0.5 rounded border border-[#d4e751]/30">
+                  HAULIX FLEET
                 </span>
               </div>
-              <p className="text-[10px] font-semibold text-slate-500 tracking-wider uppercase mt-1">
-                SMART CAMPUS COMMUTE
+              <p className="text-[9px] font-mono text-[#8e95a0] tracking-widest uppercase mt-1">
+                CAMPUS COMMUTE DISPATCH
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200/90 px-2.5 py-1 rounded-full text-[10px] font-bold shadow-xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping inline-block" />
+          <div className="flex items-center gap-1.5 bg-[#17191d] text-[#22d3ee] border border-[#22d3ee]/30 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold shadow-xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#22d3ee] animate-ping inline-block" />
             <span>.EDU VERIFIED</span>
           </div>
         </div>
 
-        {/* Hero Card with Glassmorphic Ambient Gradient */}
-        <div className="relative rounded-3xl p-6 text-white shadow-xl shadow-indigo-950/15 mb-6 overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 border border-white/10">
-          {/* Ambient Glows */}
-          <div className="absolute -top-12 -right-12 w-48 h-48 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
+        {/* Haulix Hero Card */}
+        <div className="relative rounded-3xl p-6 bg-[#17191d] border border-[rgba(255,255,255,0.08)] shadow-2xl shadow-black mb-5 overflow-hidden">
+          {/* Subtle Electric Lime Glow */}
+          <div className="absolute top-0 right-0 w-44 h-44 bg-[#d4e751]/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="relative z-10">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-semibold mb-3.5 border border-white/15">
-              <Sparkles size={12} className="text-amber-300" />
-              <span className="tracking-wide">Hyper-Local Transit Pooling</span>
+            <div className="inline-flex items-center gap-2 bg-[#1e2127] border border-[rgba(255,255,255,0.08)] px-3 py-1 rounded-full text-[10px] font-mono font-bold text-[#d4e751] mb-3">
+              <Activity size={12} className="text-[#d4e751]" />
+              <span className="tracking-wider uppercase">Zero Commission Logistics</span>
             </div>
 
-            <h2 className="text-2xl font-black leading-tight tracking-tight mb-2 text-white">
+            <h2 className="text-2xl font-black leading-tight tracking-tight text-white mb-2">
               Metro to Campus,<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-violet-200 to-amber-200">
-                Shared in Seconds.
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d4e751] via-[#e2f163] to-white">
+                Coordinated in Seconds.
               </span>
             </h2>
 
-            <p className="text-slate-300 text-xs leading-relaxed max-w-[280px]">
-              Group with nearby students at transit hubs, split auto & cab fares via dynamic UPI, and commute safer together.
+            <p className="text-[#8e95a0] text-xs leading-relaxed max-w-[280px]">
+              Group with nearby commuters at transit gates. Calculate proportional splits and settle instantly with dynamic UPI.
             </p>
 
-            <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-300">
-              <span className="flex items-center gap-1.5">
-                <Zap size={13} className="text-amber-400" />
-                <span>Zero Commission</span>
-              </span>
-              <span className="flex items-center gap-1.5">
-                <MapPin size={13} className="text-indigo-400" />
-                <span>300m Radar</span>
-              </span>
-              <span className="flex items-center gap-1.5">
-                <ShieldCheck size={13} className="text-emerald-400" />
-                <span>RTO Safe</span>
-              </span>
+            {/* Telemetry Stat Strip */}
+            <div className="mt-4 pt-3.5 border-t border-[rgba(255,255,255,0.08)] grid grid-cols-3 gap-2 text-[10px] font-mono">
+              <div className="bg-[#14161a] p-2 rounded-xl border border-[rgba(255,255,255,0.06)] text-center">
+                <div className="text-[#8e95a0] text-[9px] uppercase">Radar Radius</div>
+                <div className="text-white font-bold mt-0.5">300m</div>
+              </div>
+              <div className="bg-[#14161a] p-2 rounded-xl border border-[rgba(255,255,255,0.06)] text-center">
+                <div className="text-[#8e95a0] text-[9px] uppercase">RTO Limit</div>
+                <div className="text-[#d4e751] font-bold mt-0.5">3-4 Pax</div>
+              </div>
+              <div className="bg-[#14161a] p-2 rounded-xl border border-[rgba(255,255,255,0.06)] text-center">
+                <div className="text-[#8e95a0] text-[9px] uppercase">Platform Fee</div>
+                <div className="text-[#22d3ee] font-bold mt-0.5">₹0 / Free</div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Sleek Navigation Tabs */}
-        <div className="flex bg-slate-100/90 p-1 rounded-2xl mb-5 text-xs font-bold border border-slate-200/80 shadow-xs">
+        {/* Haulix Nav Tabs */}
+        <div className="flex bg-[#17191d] p-1 rounded-full mb-5 text-xs font-bold border border-[rgba(255,255,255,0.08)] shadow-xs">
           <button
             type="button"
             onClick={() => { setActiveTab('demo'); setErrorMessage(''); }}
-            className={`flex-1 py-2.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 ${
+            className={`flex-1 py-2 rounded-full transition-all duration-200 flex items-center justify-center gap-1.5 ${
               activeTab === 'demo'
-                ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-900/5'
-                : 'text-slate-500 hover:text-slate-900'
+                ? 'bg-[#d4e751] text-[#0b0c0e] shadow-md shadow-[#d4e751]/30 font-extrabold'
+                : 'text-[#8e95a0] hover:text-white'
             }`}
           >
             <Sparkles size={13} />
@@ -255,10 +257,10 @@ export default function LandingAuthPage() {
           <button
             type="button"
             onClick={() => { setActiveTab('login'); setErrorMessage(''); }}
-            className={`flex-1 py-2.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 ${
+            className={`flex-1 py-2 rounded-full transition-all duration-200 flex items-center justify-center gap-1.5 ${
               activeTab === 'login'
-                ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-900/5'
-                : 'text-slate-500 hover:text-slate-900'
+                ? 'bg-[#d4e751] text-[#0b0c0e] shadow-md shadow-[#d4e751]/30 font-extrabold'
+                : 'text-[#8e95a0] hover:text-white'
             }`}
           >
             <span>Student Login</span>
@@ -266,10 +268,10 @@ export default function LandingAuthPage() {
           <button
             type="button"
             onClick={() => { setActiveTab('register'); setErrorMessage(''); }}
-            className={`flex-1 py-2.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 ${
+            className={`flex-1 py-2 rounded-full transition-all duration-200 flex items-center justify-center gap-1.5 ${
               activeTab === 'register'
-                ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-900/5'
-                : 'text-slate-500 hover:text-slate-900'
+                ? 'bg-[#d4e751] text-[#0b0c0e] shadow-md shadow-[#d4e751]/30 font-extrabold'
+                : 'text-[#8e95a0] hover:text-white'
             }`}
           >
             <span>Register</span>
@@ -278,27 +280,27 @@ export default function LandingAuthPage() {
 
         {/* Feedback Messages */}
         {errorMessage && (
-          <div className="mb-4 p-3.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-2xl text-xs flex items-start gap-2.5 shadow-xs animate-shake">
-            <AlertCircle size={16} className="mt-0.5 shrink-0" />
+          <div className="mb-4 p-3.5 bg-[#251214] border border-[#ef4444]/60 text-[#fca5a5] rounded-2xl text-xs flex items-start gap-2.5 shadow-xs">
+            <AlertCircle size={16} className="mt-0.5 shrink-0 text-[#ef4444]" />
             <span className="font-medium leading-relaxed">{errorMessage}</span>
           </div>
         )}
 
         {successMessage && (
-          <div className="mb-4 p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl text-xs flex items-center gap-2.5 shadow-xs">
-            <CheckCircle2 size={16} className="shrink-0 text-emerald-600" />
+          <div className="mb-4 p-3.5 bg-[#122218] border border-[#10b981]/60 text-[#86efac] rounded-2xl text-xs flex items-center gap-2.5 shadow-xs">
+            <CheckCircle2 size={16} className="shrink-0 text-[#10b981]" />
             <span className="font-semibold">{successMessage}</span>
           </div>
         )}
 
-        {/* DEMO TAB */}
+        {/* DEMO TAB (Haulix Fleet Personas) */}
         {activeTab === 'demo' && (
           <div className="space-y-3">
             <div className="flex items-center justify-between mb-1 px-1">
-              <span className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">
-                Select Pre-Seeded Student Persona
+              <span className="text-[10px] font-mono font-extrabold text-[#8e95a0] uppercase tracking-wider">
+                Pre-Seeded Commuter Personas
               </span>
-              <span className="text-[10px] text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded-full">
+              <span className="text-[10px] text-[#d4e751] font-mono font-bold bg-[#d4e751]/10 px-2 py-0.5 rounded border border-[#d4e751]/20">
                 Instant Access
               </span>
             </div>
@@ -307,46 +309,40 @@ export default function LandingAuthPage() {
               <div
                 key={p.email}
                 onClick={() => !loading && handleDemoLogin(p.index)}
-                className={`group relative bg-white border border-slate-200 hover:border-indigo-500 p-4 rounded-2xl shadow-xs hover:shadow-md transition-all duration-200 cursor-pointer flex items-center justify-between`}
+                className="group relative bg-[#17191d] border border-[rgba(255,255,255,0.08)] hover:border-[#d4e751] p-4 rounded-2xl shadow-md hover:shadow-xl transition-all duration-200 cursor-pointer flex items-center justify-between"
               >
                 <div className="flex items-center gap-3.5">
-                  <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform shadow-xs border border-slate-200/60">
+                  <div className="w-12 h-12 rounded-2xl bg-[#1e2127] border border-[rgba(255,255,255,0.06)] flex items-center justify-center text-2xl group-hover:scale-105 transition-transform shadow-inner">
                     {p.avatar}
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-slate-900 text-sm">
+                      <span className="font-bold text-white text-sm">
                         {p.name}
                       </span>
-                      <span className="text-[9px] bg-indigo-50 text-indigo-700 font-extrabold px-2 py-0.5 rounded-full border border-indigo-100 tracking-wide">
+                      <span className="text-[9px] bg-[#1e2127] text-[#d4e751] font-mono font-extrabold px-2 py-0.5 rounded border border-[#d4e751]/30">
                         {p.badge}
                       </span>
                     </div>
-                    <div className="text-[11px] text-slate-500 font-medium mt-0.5">
-                      {p.role} • <span className="font-mono text-slate-700 font-semibold">{p.rollId}</span>
+                    <div className="text-[11px] text-[#8e95a0] mt-0.5 font-medium">
+                      {p.role} • <span className="font-mono text-white font-bold">{p.rollId}</span>
                     </div>
-                    <div className="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1 font-mono">
+                    <div className="text-[10px] text-[#525866] font-mono mt-0.5 flex items-center gap-1.5">
                       <span>UPI:</span>
-                      <span className="text-slate-600">{p.upi}</span>
+                      <span className="text-[#8e95a0]">{p.upi}</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="w-9 h-9 rounded-xl bg-slate-50 group-hover:bg-indigo-600 group-hover:text-white flex items-center justify-center text-slate-400 transition-all shadow-xs">
+                <div className="w-9 h-9 rounded-full bg-[#1e2127] group-hover:bg-[#d4e751] group-hover:text-[#0b0c0e] flex items-center justify-center text-[#8e95a0] transition-all shadow-xs">
                   {loading ? (
-                    <Loader2 size={15} className="animate-spin text-indigo-600 group-hover:text-white" />
+                    <Loader2 size={15} className="animate-spin text-[#d4e751] group-hover:text-[#0b0c0e]" />
                   ) : (
                     <ArrowRight size={15} />
                   )}
                 </div>
               </div>
             ))}
-
-            <div className="p-3 bg-indigo-50/60 rounded-xl border border-indigo-100 text-center">
-              <p className="text-[11px] text-indigo-700 font-medium">
-                💡 Tip: Open another browser window to test real-time co-rider coordination!
-              </p>
-            </div>
           </div>
         )}
 
@@ -354,26 +350,24 @@ export default function LandingAuthPage() {
         {(activeTab === 'login' || activeTab === 'register') && (
           <form onSubmit={handleCustomAuth} className="space-y-3.5">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                College Email Domain (.edu, .edu.in, .ac.in)
+              <label className="block text-xs font-bold text-[#8e95a0] mb-1.5 uppercase font-mono tracking-wider">
+                Institutional Email (.edu, .edu.in, .ac.in)
               </label>
-              <div className="relative">
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="student@university.edu.in"
-                  className="w-full text-xs font-medium px-4 py-3 rounded-xl border border-slate-200 bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/10 outline-none transition shadow-xs"
-                />
-              </div>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="student@university.edu.in"
+                className="w-full text-xs font-medium px-4 py-3 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#17191d] text-white focus:border-[#d4e751] focus:ring-1 focus:ring-[#d4e751] outline-none transition"
+              />
             </div>
 
             {activeTab === 'register' && (
               <>
                 <div className="grid grid-cols-2 gap-2.5">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    <label className="block text-xs font-bold text-[#8e95a0] mb-1.5 uppercase font-mono">
                       Full Name
                     </label>
                     <input
@@ -382,11 +376,11 @@ export default function LandingAuthPage() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g. Aryan Gupta"
-                      className="w-full text-xs font-medium px-3.5 py-3 rounded-xl border border-slate-200 bg-white focus:border-indigo-600 outline-none transition"
+                      className="w-full text-xs font-medium px-3.5 py-3 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#17191d] text-white focus:border-[#d4e751] outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    <label className="block text-xs font-bold text-[#8e95a0] mb-1.5 uppercase font-mono">
                       Student Roll / ID
                     </label>
                     <input
@@ -395,20 +389,20 @@ export default function LandingAuthPage() {
                       value={rollId}
                       onChange={(e) => setRollId(e.target.value)}
                       placeholder="e.g. 21BCS045"
-                      className="w-full text-xs font-medium px-3.5 py-3 rounded-xl border border-slate-200 bg-white focus:border-indigo-600 outline-none transition"
+                      className="w-full text-xs font-medium px-3.5 py-3 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#17191d] text-white focus:border-[#d4e751] outline-none"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2.5">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    <label className="block text-xs font-bold text-[#8e95a0] mb-1.5 uppercase font-mono">
                       Gender
                     </label>
                     <select
                       value={gender}
                       onChange={(e) => setGender(e.target.value as 'FEMALE' | 'MALE' | 'OTHER')}
-                      className="w-full text-xs font-medium px-3.5 py-3 rounded-xl border border-slate-200 focus:border-indigo-600 outline-none bg-white transition"
+                      className="w-full text-xs font-medium px-3.5 py-3 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#17191d] text-white focus:border-[#d4e751] outline-none"
                     >
                       <option value="FEMALE">Female (Women Pool eligible)</option>
                       <option value="MALE">Male</option>
@@ -416,7 +410,7 @@ export default function LandingAuthPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    <label className="block text-xs font-bold text-[#8e95a0] mb-1.5 uppercase font-mono">
                       College Name
                     </label>
                     <input
@@ -424,36 +418,36 @@ export default function LandingAuthPage() {
                       value={collegeName}
                       onChange={(e) => setCollegeName(e.target.value)}
                       placeholder="Campus name"
-                      className="w-full text-xs font-medium px-3.5 py-3 rounded-xl border border-slate-200 bg-white focus:border-indigo-600 outline-none transition"
+                      className="w-full text-xs font-medium px-3.5 py-3 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#17191d] text-white focus:border-[#d4e751] outline-none"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5 flex items-center justify-between">
+                  <label className="block text-xs font-bold text-[#8e95a0] mb-1.5 flex items-center justify-between uppercase font-mono">
                     <span>Default UPI ID (for receiving split fare)</span>
-                    <span className="text-[10px] text-slate-400 font-normal">Auto-linked</span>
+                    <span className="text-[10px] text-[#525866]">Optional</span>
                   </label>
                   <input
                     type="text"
                     value={defaultUpiId}
                     onChange={(e) => setDefaultUpiId(e.target.value)}
                     placeholder="yourname@okaxis / @okhdfc"
-                    className="w-full text-xs font-medium px-4 py-3 rounded-xl border border-slate-200 bg-white focus:border-indigo-600 outline-none transition"
+                    className="w-full text-xs font-medium px-4 py-3 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#17191d] text-white focus:border-[#d4e751] outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5 flex items-center justify-between">
+                  <label className="block text-xs font-bold text-[#8e95a0] mb-1.5 flex items-center justify-between uppercase font-mono">
                     <span>Emergency Contact Phone</span>
-                    <span className="text-[10px] text-rose-500 font-semibold">Safety SOS</span>
+                    <span className="text-[10px] text-[#ef4444]">Safety SOS</span>
                   </label>
                   <input
                     type="tel"
                     value={emergencyContact}
                     onChange={(e) => setEmergencyContact(e.target.value)}
                     placeholder="+91 98765 43210"
-                    className="w-full text-xs font-medium px-4 py-3 rounded-xl border border-slate-200 bg-white focus:border-indigo-600 outline-none transition"
+                    className="w-full text-xs font-medium px-4 py-3 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#17191d] text-white focus:border-[#d4e751] outline-none"
                   />
                 </div>
               </>
@@ -462,17 +456,17 @@ export default function LandingAuthPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20 transition-all duration-200 disabled:opacity-50"
+              className="w-full mt-2 py-3.5 btn-haulix-lime text-xs flex items-center justify-center gap-2 uppercase tracking-wider font-extrabold disabled:opacity-50"
             >
               {loading ? (
                 <>
-                  <Loader2 size={16} className="animate-spin" />
+                  <Loader2 size={16} className="animate-spin text-[#0b0c0e]" />
                   <span>Verifying Credentials...</span>
                 </>
               ) : (
                 <>
                   <UserCheck size={16} />
-                  <span>{activeTab === 'register' ? 'Register & Enter AutoSync' : 'Login with College Email'}</span>
+                  <span>{activeTab === 'register' ? 'Register & Enter Fleet' : 'Verify & Enter AutoSync'}</span>
                 </>
               )}
             </button>
@@ -480,17 +474,17 @@ export default function LandingAuthPage() {
         )}
       </div>
 
-      {/* RTO Compliance Notice Card */}
+      {/* Haulix Regulatory Compliance Card */}
       <div className="pt-6 pb-2">
-        <div className="p-4 bg-slate-50 border border-slate-200/90 rounded-2xl shadow-xs">
-          <div className="flex items-center gap-2 text-slate-800 text-xs font-bold mb-1.5">
-            <div className="w-5 h-5 rounded-md bg-indigo-100 text-indigo-700 flex items-center justify-center">
-              <Lock size={11} />
+        <div className="p-4 bg-[#17191d] border border-[rgba(255,255,255,0.08)] rounded-2xl shadow-sm">
+          <div className="flex items-center gap-2 text-white text-xs font-bold mb-1.5 font-mono">
+            <div className="w-5 h-5 rounded-md bg-[#1e2127] text-[#d4e751] flex items-center justify-center">
+              <Lock size={12} />
             </div>
-            <span>RTO Compliance & Student Safety Notice</span>
+            <span>RTO Safety & Zero-Commission Compliance</span>
           </div>
-          <p className="text-[10px] leading-relaxed text-slate-500">
-            AutoSync operates strictly as a zero-commission, peer-to-peer student commute coordinator. No platform commissions or commercial ride-hailing fees are charged. Riders split metered auto/cab fares directly via dynamic UPI in compliance with student cost-sharing norms.
+          <p className="text-[10px] leading-relaxed text-[#8e95a0]">
+            AutoSync is an institutional peer-to-peer cost-sharing coordinator. No platform commissions or commercial ride-hailing fees are charged. Riders split metered auto/cab fares directly via dynamic UPI links in compliance with regional student pooling norms.
           </p>
         </div>
       </div>
