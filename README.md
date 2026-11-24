@@ -3,6 +3,35 @@
 > **Hyper-Local Smart Mobility Platform for College Campuses**
 > Coordinate shared auto-rickshaw and cab commutes from transit hubs (Metro stations & Bus depots) to campus with atomic seat limits, dynamic UPI settlement, and RTO compliance.
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvkvarun719%2FAutosync)
+
+---
+
+## 🚀 Instant Deployment to Vercel (Zero Config)
+
+This repository is optimized to deploy directly to **Vercel** with **0 external credentials or paid API keys required**.
+
+### Option A: 1-Click Web Deploy
+1. Click the **[Deploy with Vercel](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvkvarun719%2FAutosync)** button above.
+2. Select your GitHub account and click **Create**.
+3. Vercel will automatically run `npm install` (which executes `postinstall: prisma generate`) and `npm run build`.
+4. Your application will be live immediately with the bundled, pre-seeded campus transit hubs, drop-off gates, and demo student personas!
+
+### Option B: Deploy via Vercel CLI
+```bash
+# 1. Install Vercel CLI (if not already installed)
+npm i -g vercel
+
+# 2. Deploy from repo root
+vercel
+
+# 3. Deploy to production
+vercel --prod
+```
+
+> **Note on Vercel Serverless Architecture:**  
+> AutoSync automatically detects Vercel's serverless environment at runtime and mirrors the pre-seeded SQLite database to `/tmp/dev.db`, allowing instant write access for creating pools, joining rides, logging license plates, and settling UPI splits without requiring an external database setup.
+
 ---
 
 ## 🌟 Core Features
@@ -27,7 +56,7 @@
 - Interactive Leaflet map with OpenStreetMap tiles displaying pickup hubs, destination route, and active pools.
 - Real-time polling every 3 seconds showing joined co-riders, avatar badges, and remaining seat slots.
 - Live countdown timer for the 10-minute window.
-- **Quick-Status Chips**: "At Gate 2", "Spotted an auto", "2 mins away", "In auto now", "At campus gate".
+- **Quick-Status Chips**: "At Gate 2", "Spotted an auto", "2 mins away", "Boarded auto", "At campus gate".
 - **Simulate Another Student Joining Button**: Add simulated student riders with 1 click for solo testing.
 
 ### 4. 💸 Proportional Fare Splitting & Automated UPI Links
@@ -48,30 +77,32 @@
 ## 🛠️ Tech Stack (Zero External API Keys Required)
 
 - **Framework**: Next.js 16 (App Router) + TypeScript
-- **Styling**: Tailwind CSS
-- **Database**: Local SQLite via Prisma ORM
-- **Maps**: Leaflet + OpenStreetMap tiles (dynamic client import)
+- **Styling**: Tailwind CSS (Haulix Logistics Dark Mode Theme)
+- **Database**: SQLite via Prisma ORM (with Vercel serverless `/tmp` bridge)
+- **Maps**: Leaflet + OpenStreetMap CartoDB Dark Matter tiles (dynamic client import)
 - **Payments**: Dynamic UPI Deep Links + `qrcode.react`
 - **Icons**: `lucide-react`
 
 ---
 
-## 🚀 Quick Start
+## 💻 Local Development Setup
 
 ### 1. Install Dependencies
 ```bash
 npm install
 ```
 
-### 2. Run Database Migrations & Seed
+### 2. Run Database Migrations & Seed (Already bundled in repo)
 ```bash
 npx prisma generate
 npx prisma db push
 npx prisma db seed
 ```
 
-### 3. Build & Start
+### 3. Start Local Server
 ```bash
+npm run dev
+# or for optimized production build:
 npm run build
 npm run start
 ```
@@ -81,7 +112,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 🧪 Testing Multi-Rider Pooling
 1. Open [http://localhost:3000](http://localhost:3000) and click **Priya Sharma (Demo Lead)**.
-2. Select **Metro Station Gate 1** ➡️ **Main Campus Gate**, choose **Auto (3 seats)**, and click **Find or Create Priority Pool**.
-3. Inside the Waiting Room, click **"+ Simulate Another Student Joining"** to simulate co-riders joining.
-4. Enter total driver fare (e.g. ₹90) and click **Calculate & Generate Dynamic UPI QRs**.
+2. Select **Metro Station Gate 1** ➡️ **Main Campus Gate**, choose **Auto (3 seats)**, and click **Initiate Priority Commute Pool**.
+3. Inside the Waiting Room, click **"SIMULATE ANOTHER STUDENT (SOLO TEST)"** to simulate co-riders joining.
+4. Enter total driver fare (e.g. ₹90) and click **Generate Dynamic UPI QRs**.
 5. Test logging the vehicle number plate, 1-Tap SOS trigger, or copying the Live Trip Share link.
