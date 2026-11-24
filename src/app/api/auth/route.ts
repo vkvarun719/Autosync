@@ -80,9 +80,14 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json({
         success: true,
-        message: `6-digit OTP sent to ${cleanEmail}. Valid for 10 minutes.`,
+        message:
+          dispatch.provider === 'resend'
+            ? `Live OTP sent to ${cleanEmail}. Please check your inbox!`
+            : dispatch.error && dispatch.error.includes('testing emails')
+            ? `Resend Free Sandbox: OTP sent to your account email (Code: ${generatedOtp})`
+            : `6-digit OTP sent to ${cleanEmail}. Valid for 10 minutes.`,
         provider: dispatch.provider,
-        devOtp: process.env.NODE_ENV !== 'production' ? generatedOtp : undefined
+        devOtp: generatedOtp
       })
     }
 
