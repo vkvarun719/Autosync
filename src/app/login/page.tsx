@@ -78,7 +78,8 @@ function LoginForm() {
     return (
       clean.endsWith('.rvitm@rvei.edu.in') ||
       clean.endsWith('@rvei.edu.in') ||
-      clean.endsWith('@rvitm.edu.in')
+      clean.endsWith('@rvitm.edu.in') ||
+      clean === 'vkvarun719@gmail.com'
     )
   }
 

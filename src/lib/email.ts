@@ -63,7 +63,38 @@ export async function sendOtpEmail({ toEmail, otp }: SendOtpParams): Promise<{ s
     </html>
   `
 
-  // 1. Try Resend if RESEND_API_KEY is configured
+  // 1. Try Nodemailer Gmail SMTP if configured (Sends directly to ANY recipient email without sandbox limits)
+  const smtpUser = process.env.SMTP_USER?.trim()
+  const smtpPass = process.env.SMTP_PASS?.replace(/\s+/g, '').trim()
+
+  if (smtpUser && smtpPass) {
+    try {
+      const transporter = nodemailer.createTransport({
+        service: process.env.SMTP_SERVICE || 'gmail',
+        auth: {
+          user: smtpUser,
+          pass: smtpPass
+        }
+      })
+
+      const info = await transporter.sendMail({
+        from: `"AutoSync RVITM" <${smtpUser}>`,
+        to: cleanEmail,
+        subject,
+        html: htmlContent
+      })
+
+      console.log(`\n======================================================`)
+      console.log(`[EMAIL DISPATCHED] Live OTP sent to target student ${cleanEmail} via Gmail SMTP!`)
+      console.log(`[Message ID]: ${info.messageId}`)
+      console.log(`======================================================\n`)
+      return { success: true, provider: 'smtp' }
+    } catch (err: any) {
+      console.error('[SMTP Email Error]:', err.message)
+    }
+  }
+
+  // 2. Try Resend if RESEND_API_KEY is configured
   const resendApiKey = process.env.RESEND_API_KEY?.trim()
   if (resendApiKey && resendApiKey.startsWith('re_')) {
     try {
@@ -125,33 +156,7 @@ export async function sendOtpEmail({ toEmail, otp }: SendOtpParams): Promise<{ s
     }
   }
 
-  // 2. Try Nodemailer SMTP (e.g. Gmail App Password or College SMTP)
-  const smtpUser = process.env.SMTP_USER?.trim()
-  const smtpPass = process.env.SMTP_PASS?.trim()
 
-  if (smtpUser && smtpPass) {
-    try {
-      const transporter = nodemailer.createTransport({
-        service: process.env.SMTP_SERVICE || 'gmail',
-        auth: {
-          user: smtpUser,
-          pass: smtpPass
-        }
-      })
-
-      await transporter.sendMail({
-        from: `"AutoSync RVITM" <${smtpUser}>`,
-        to: cleanEmail,
-        subject,
-        html: htmlContent
-      })
-
-      console.log(`[EMAIL DISPATCHED] OTP successfully sent to ${cleanEmail} via SMTP (${smtpUser})`)
-      return { success: true, provider: 'smtp' }
-    } catch (err: any) {
-      console.warn('[SMTP Email Error]:', err.message)
-    }
-  }
 
   // 3. Fallback: Log to Server Console
   console.log(`\n======================================================`)

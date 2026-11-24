@@ -10,6 +10,12 @@ function getAllowedDomain(): string {
 export function isValidRvitmEmail(email: string): boolean {
   const cleanEmail = email.toLowerCase().trim()
   const domain = getAllowedDomain()
+  const devEmail = process.env.SMTP_USER?.toLowerCase().trim()
+
+  // Allow developer admin email
+  if (devEmail && cleanEmail === devEmail) {
+    return true
+  }
 
   // Real RVITM official email format: rvit25bai050.rvitm@rvei.edu.in
   if (
