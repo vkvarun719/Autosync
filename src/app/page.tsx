@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import {
   ArrowRight,
   ShieldCheck,
@@ -173,12 +174,12 @@ export default function LandingPage() {
             >
               How it works
             </a>
-            <button
-              onClick={() => openAuthModal('login')}
-              className="h-11 px-5 rounded-xl border border-[#262b36] hover:border-[#363d4d] bg-[#171a21] hover:bg-[#1c202a] text-white text-sm font-semibold transition duration-150 shadow-xs"
+            <Link
+              href="/login"
+              className="h-11 px-5 rounded-xl border border-[#262b36] hover:border-[#363d4d] bg-[#171a21] hover:bg-[#1c202a] text-white text-sm font-semibold transition duration-150 shadow-xs flex items-center justify-center"
             >
               Login
-            </button>
+            </Link>
           </div>
         </div>
       </header>
@@ -190,7 +191,7 @@ export default function LandingPage() {
           <div className="lg:col-span-7 space-y-6">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-500/25 bg-emerald-500/10 text-emerald-400 text-xs font-semibold">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Campus ride-sharing for students</span>
+              <span>Commute app for RVITM students only</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.15]">
@@ -217,13 +218,13 @@ export default function LandingPage() {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
-              <button
-                onClick={() => openAuthModal('login')}
+              <Link
+                href="/login"
                 className="h-12 px-7 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-[#0f1115] font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition duration-150"
               >
                 <span>Get Started</span>
                 <ArrowRight size={16} />
-              </button>
+              </Link>
               <button
                 onClick={() => openAuthModal('demo')}
                 className="h-12 px-6 rounded-xl border border-[#262b36] hover:border-emerald-500/40 bg-[#171a21] hover:bg-[#1c202a] text-white font-semibold text-sm flex items-center justify-center gap-2 transition duration-150"

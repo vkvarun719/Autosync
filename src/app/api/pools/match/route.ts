@@ -29,6 +29,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'User, Hub or Destination not found' }, { status: 404 })
     }
 
+    const domain = (process.env.ALLOWED_EMAIL_DOMAIN || 'rvitm.edu.in').toLowerCase().trim()
+    if (!user.email.toLowerCase().endsWith(`@${domain}`)) {
+      return NextResponse.json(
+        { error: `Only verified RVITM students (@${domain}) can match or join rides.` },
+        { status: 403 }
+      )
+    }
+
     if (womenOnly && user.gender !== 'FEMALE') {
       return NextResponse.json({ error: 'Women-only pool is restricted to female riders' }, { status: 403 })
     }

@@ -79,13 +79,13 @@ export default function PoolWaitingRoomPage() {
   useEffect(() => {
     const userStr = localStorage.getItem('autosync_user')
     if (!userStr) {
-      router.push('/')
+      router.push('/login')
       return
     }
     try {
       setCurrentUser(JSON.parse(userStr))
     } catch {
-      router.push('/')
+      router.push('/login')
     }
   }, [router])
 

@@ -70,6 +70,7 @@ interface MapViewProps {
   selectedHub?: Hub | null
   selectedDest?: Destination | null
   pools?: Pool[]
+  routeCoords?: [number, number][]
 }
 
 export default function MapView({
@@ -77,9 +78,11 @@ export default function MapView({
   destinations,
   selectedHub,
   selectedDest,
-  pools = []
+  pools = [],
+  routeCoords
 }: MapViewProps) {
-  const defaultCenter: [number, number] = [28.6142, 77.2095]
+  // Bangalore RVITM default center
+  const defaultCenter: [number, number] = [12.8731, 77.5789]
   const currentCenter: [number, number] = selectedHub
     ? [selectedHub.lat, selectedHub.lng]
     : selectedDest
@@ -87,7 +90,9 @@ export default function MapView({
     : defaultCenter
 
   const polylineCoords: [number, number][] =
-    selectedHub && selectedDest
+    routeCoords && routeCoords.length > 0
+      ? routeCoords
+      : selectedHub && selectedDest
       ? [
           [selectedHub.lat, selectedHub.lng],
           [selectedDest.lat, selectedDest.lng],

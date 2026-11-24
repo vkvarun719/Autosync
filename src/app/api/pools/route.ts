@@ -44,6 +44,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
+    // Restrict ride sharing to verified RVITM students
+    const user = await prisma.user.findUnique({ where: { id: userId } })
+    const domain = (process.env.ALLOWED_EMAIL_DOMAIN || 'rvitm.edu.in').toLowerCase().trim()
+    if (!user || !user.email.toLowerCase().endsWith(`@${domain}`)) {
+      return NextResponse.json(
+        { error: `Only verified RVITM students (@${domain}) can create or join rides.` },
+        { status: 403 }
+      )
+    }
+
     const maxSeats = vehicleType === 'AUTO' ? 3 : 4
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000)
 

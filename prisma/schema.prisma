@@ -11,15 +11,33 @@ model User {
   id               String   @id @default(cuid())
   email            String   @unique
   name             String
-  rollId           String
-  gender           String
+  rollId           String   @default("RVITM")
+  gender           String   @default("OTHER")
   defaultUpiId     String?
   emergencyContact String?
-  collegeName      String?
+  collegeName      String?  @default("R V Institute of Technology and Management")
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   pools            PoolMember[]
   ledPools         Pool[]       @relation("PoolLead")
+  sessions         Session[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model OtpVerification {
+  id        String   @id @default(cuid())
+  email     String
+  otp       String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 }
 
 model Hub {

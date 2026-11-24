@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import { PICKUP_LOCATIONS, DESTINATION_RVITM } from '../src/lib/locations'
 
 const prisma = new PrismaClient()
 
@@ -6,26 +7,73 @@ async function main() {
   await prisma.statusUpdate.deleteMany()
   await prisma.poolMember.deleteMany()
   await prisma.pool.deleteMany()
+  await prisma.session.deleteMany()
+  await prisma.otpVerification.deleteMany()
   await prisma.user.deleteMany()
   await prisma.destination.deleteMany()
   await prisma.hub.deleteMany()
 
-  const gate1 = await prisma.hub.create({ data: { name: 'Metro Station Gate 1', type: 'METRO', lat: 28.6139, lng: 77.2090 } })
-  const gate2 = await prisma.hub.create({ data: { name: 'Metro Station Gate 2', type: 'METRO', lat: 28.6142, lng: 77.2095 } })
-  const busDepot = await prisma.hub.create({ data: { name: 'Central Bus Depot', type: 'BUS', lat: 28.6150, lng: 77.2100 } })
-  await prisma.hub.create({ data: { name: 'Railway Station Main Exit', type: 'OTHER', lat: 28.6160, lng: 77.2080 } })
+  // 1. Seed 6 Fixed Pickup Hubs
+  for (const loc of PICKUP_LOCATIONS) {
+    await prisma.hub.create({
+      data: {
+        id: loc.id,
+        name: loc.name,
+        type: loc.type,
+        lat: loc.lat,
+        lng: loc.lng
+      }
+    })
+  }
 
-  const mainGate = await prisma.destination.create({ data: { name: 'Main Campus Gate', lat: 28.6250, lng: 77.2200 } })
-  await prisma.destination.create({ data: { name: 'Hostel Block A', lat: 28.6260, lng: 77.2210 } })
-  await prisma.destination.create({ data: { name: 'Tech Park Gate', lat: 28.6270, lng: 77.2220 } })
-  await prisma.destination.create({ data: { name: 'Library & Admin Block', lat: 28.6255, lng: 77.2215 } })
-  await prisma.destination.create({ data: { name: 'Sports Ground Entry', lat: 28.6245, lng: 77.2205 } })
+  // 2. Seed RVITM Destination
+  await prisma.destination.create({
+    data: {
+      id: DESTINATION_RVITM.id,
+      name: DESTINATION_RVITM.name,
+      lat: DESTINATION_RVITM.lat,
+      lng: DESTINATION_RVITM.lng
+    }
+  })
 
-  await prisma.user.create({ data: { email: 'priya.sharma@university.edu.in', name: 'Priya Sharma', rollId: 'CS2021001', gender: 'FEMALE', defaultUpiId: 'priya@okicici', emergencyContact: '+91-9876543210', collegeName: 'Delhi Tech University' } })
-  await prisma.user.create({ data: { email: 'rahul.verma@university.edu.in', name: 'Rahul Verma', rollId: 'EC2021042', gender: 'MALE', defaultUpiId: 'rahul@okhdfc', emergencyContact: '+91-9876543211', collegeName: 'Delhi Tech University' } })
-  await prisma.user.create({ data: { email: 'ananya.singh@university.edu.in', name: 'Ananya Singh', rollId: 'ME2022015', gender: 'FEMALE', defaultUpiId: 'ananya@okaxis', emergencyContact: '+91-9876543212', collegeName: 'Delhi Tech University' } })
+  // 3. Seed RVITM Student Personas
+  await prisma.user.create({
+    data: {
+      email: 'priya.sharma@rvitm.edu.in',
+      name: 'Priya Sharma',
+      rollId: '1RV21CS085',
+      gender: 'FEMALE',
+      defaultUpiId: 'priya@okicici',
+      emergencyContact: '+91-9876543210',
+      collegeName: 'RV Institute of Technology and Management'
+    }
+  })
 
-  console.log('Seeded successfully!')
+  await prisma.user.create({
+    data: {
+      email: 'rahul.verma@rvitm.edu.in',
+      name: 'Rahul Verma',
+      rollId: '1RV21EC042',
+      gender: 'MALE',
+      defaultUpiId: 'rahul@okhdfc',
+      emergencyContact: '+91-9876543211',
+      collegeName: 'RV Institute of Technology and Management'
+    }
+  })
+
+  await prisma.user.create({
+    data: {
+      email: 'ananya.singh@rvitm.edu.in',
+      name: 'Ananya Singh',
+      rollId: '1RV22ME015',
+      gender: 'FEMALE',
+      defaultUpiId: 'ananya@okaxis',
+      emergencyContact: '+91-9876543212',
+      collegeName: 'RV Institute of Technology and Management'
+    }
+  })
+
+  console.log('RVITM Locations, Destination, and Students seeded successfully!')
 }
 
 main().catch(console.error).finally(() => prisma.$disconnect())
