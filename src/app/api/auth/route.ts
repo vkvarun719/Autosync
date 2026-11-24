@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import crypto from 'crypto'
+import { sendOtpEmail } from '@/lib/email'
 
 function getAllowedDomain(): string {
   return (process.env.ALLOWED_EMAIL_DOMAIN || 'rvei.edu.in').toLowerCase().trim()
@@ -71,15 +72,16 @@ export async function POST(req: NextRequest) {
         }
       })
 
-      // In server console
-      console.log(`\n======================================================`)
-      console.log(`[RVITM AUTH] 6-digit OTP for ${cleanEmail}: ${generatedOtp}`)
-      console.log(`[RVITM AUTH] Expires in 10 minutes: ${expiresAt.toLocaleTimeString()}`)
-      console.log(`======================================================\n`)
+      // Dispatch OTP via live email service (Resend / SMTP) or console fallback
+      const dispatch = await sendOtpEmail({
+        toEmail: cleanEmail,
+        otp: generatedOtp
+      })
 
       return NextResponse.json({
         success: true,
         message: `6-digit OTP sent to ${cleanEmail}. Valid for 10 minutes.`,
+        provider: dispatch.provider,
         devOtp: process.env.NODE_ENV !== 'production' ? generatedOtp : undefined
       })
     }
