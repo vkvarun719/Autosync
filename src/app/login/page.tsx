@@ -52,7 +52,6 @@ function LoginForm() {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
-  const [devOtpHint, setDevOtpHint] = useState<string | null>(null)
   const [timerSeconds, setTimerSeconds] = useState(600) // 10 minutes
 
   // Countdown timer for OTP expiry
@@ -88,7 +87,6 @@ function LoginForm() {
     if (e) e.preventDefault()
     setErrorMessage('')
     setSuccessMessage('')
-    setDevOtpHint(null)
 
     const cleanEmail = email.trim().toLowerCase()
 
@@ -120,10 +118,7 @@ function LoginForm() {
 
       setStep('OTP')
       setTimerSeconds(600)
-      setSuccessMessage(data.message || `6-digit OTP sent to ${cleanEmail}`)
-      if (data.devOtp) {
-        setDevOtpHint(data.devOtp)
-      }
+      setSuccessMessage(data.message || `6-digit OTP sent to ${cleanEmail}. Please check your inbox.`)
     } catch (err: unknown) {
       setErrorMessage(err instanceof Error ? err.message : 'Failed to send OTP')
     } finally {
@@ -233,20 +228,6 @@ function LoginForm() {
         <div className="mt-4 p-3.5 bg-emerald-950/60 border border-emerald-500/50 text-emerald-200 rounded-xl text-xs flex items-start gap-2.5 animate-in fade-in">
           <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-emerald-400" />
           <span className="font-medium leading-snug">{successMessage}</span>
-        </div>
-      )}
-
-      {/* Dev OTP Helper */}
-      {devOtpHint && (
-        <div className="mt-3 p-3 bg-amber-950/50 border border-amber-500/40 text-amber-200 rounded-xl text-xs flex items-center justify-between">
-          <span>Dev OTP Code: <strong className="font-mono text-white text-sm tracking-wider">{devOtpHint}</strong></span>
-          <button
-            type="button"
-            onClick={() => setOtp(devOtpHint)}
-            className="text-[11px] font-bold text-amber-400 hover:underline px-2 py-1 rounded bg-amber-500/10"
-          >
-            Auto-fill
-          </button>
         </div>
       )}
 
