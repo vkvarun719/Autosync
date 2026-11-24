@@ -5,56 +5,61 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-
 import L from 'leaflet'
 import type { Hub, Destination, Pool } from '@/types'
 
-// Setup clean custom icons using Haulix Electric Lime & Dark accents
-const createHaulixIcon = (iconSymbol: string, title: string, isAccent: boolean = false) => {
+// Clean modern map icons with Emerald accents
+const createCustomIcon = (symbol: string, isHub: boolean = true) => {
   return L.divIcon({
-    className: 'haulix-map-marker-container',
+    className: 'autosync-map-marker',
     html: `
-      <div style="position: relative; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;">
+      <div style="
+        position: relative;
+        width: 34px;
+        height: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      ">
         <div style="
           position: absolute;
           width: 100%;
           height: 100%;
           border-radius: 50%;
-          background: ${isAccent ? '#d4e751' : '#22d3ee'};
-          opacity: 0.25;
-          animation: haulix-lime-pulse 2.2s infinite ease-out;
+          background: ${isHub ? 'rgba(16, 185, 129, 0.25)' : 'rgba(56, 189, 248, 0.2)'};
         "></div>
         <div style="
-          background: ${isAccent ? '#d4e751' : '#1e2127'};
-          color: ${isAccent ? '#0b0c0e' : '#ffffff'};
-          width: 32px;
-          height: 32px;
+          background: ${isHub ? '#10b981' : '#171a21'};
+          color: ${isHub ? '#0f1115' : '#ffffff'};
+          width: 28px;
+          height: 28px;
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 15px;
-          font-weight: 800;
-          box-shadow: 0 4px 16px rgba(0,0,0,0.8), 0 0 0 2px ${isAccent ? '#d4e751' : 'rgba(255,255,255,0.15)'};
+          font-size: 13px;
+          font-weight: 700;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.6), 0 0 0 2px ${isHub ? '#10b981' : '#262b36'};
           position: relative;
           z-index: 2;
           cursor: pointer;
-        " title="${title}">
-          ${iconSymbol}
+        ">
+          ${symbol}
         </div>
       </div>
     `,
-    iconSize: [38, 38],
-    iconAnchor: [19, 19],
-    popupAnchor: [0, -20],
+    iconSize: [34, 34],
+    iconAnchor: [17, 17],
+    popupAnchor: [0, -18],
   })
 }
 
-const metroIcon = createHaulixIcon('🚊', 'Transit Hub (Metro)', true)
-const busIcon = createHaulixIcon('🚌', 'Bus Depot Hub', true)
-const transitIcon = createHaulixIcon('🚉', 'Transit Gate', true)
-const campusIcon = createHaulixIcon('🏫', 'Campus Drop-Off', false)
+const metroIcon = createCustomIcon('🚊', true)
+const busIcon = createCustomIcon('🚌', true)
+const trainIcon = createCustomIcon('🚉', true)
+const campusIcon = createCustomIcon('🏫', false)
 
 function MapFlyTo({ center }: { center: [number, number] }) {
   const map = useMap()
   useEffect(() => {
-    map.flyTo(center, 14, { duration: 1.2 })
+    map.flyTo(center, 14, { duration: 1.0 })
   }, [center, map])
   return null
 }
@@ -90,7 +95,7 @@ export default function MapView({
       : []
 
   return (
-    <div className="w-full h-full relative rounded-2xl overflow-hidden border border-[rgba(255,255,255,0.08)] shadow-md bg-[#15171b]">
+    <div className="w-full h-full relative rounded-2xl overflow-hidden border border-[#262b36] shadow-md bg-[#12141a]">
       <MapContainer
         center={currentCenter}
         zoom={14}
@@ -112,7 +117,7 @@ export default function MapView({
               ? metroIcon
               : hub.type === 'BUS'
               ? busIcon
-              : transitIcon
+              : trainIcon
           return (
             <Marker
               key={`hub-${hub.id}`}
@@ -121,11 +126,11 @@ export default function MapView({
             >
               <Popup>
                 <div>
-                  <div className="font-extrabold text-[#ffffff] text-xs tracking-tight">
+                  <div className="font-bold text-white text-xs">
                     {hub.name}
                   </div>
-                  <div className="text-[10px] text-[#d4e751] uppercase tracking-widest font-mono font-bold mt-0.5">
-                    {hub.type} HUB • 300M RADAR
+                  <div className="text-[10px] text-emerald-400 font-medium mt-0.5">
+                    Pickup Stop • 300m radius
                   </div>
                 </div>
               </Popup>
@@ -142,54 +147,54 @@ export default function MapView({
           >
             <Popup>
               <div>
-                <div className="font-extrabold text-[#ffffff] text-xs tracking-tight">
+                <div className="font-bold text-white text-xs">
                   {dest.name}
                 </div>
-                <div className="text-[10px] text-[#22d3ee] font-bold mt-0.5 uppercase tracking-wide">
-                  CAMPUS DROP-OFF ZONE
+                <div className="text-[10px] text-sky-400 font-medium mt-0.5">
+                  Campus Drop-Off
                 </div>
               </div>
             </Popup>
           </Marker>
         ))}
 
-        {/* Route Path Polyline with Haulix Electric Lime Glow */}
+        {/* Route Line in Emerald */}
         {polylineCoords.length === 2 && (
           <>
             <Polyline
               positions={polylineCoords}
               pathOptions={{
-                color: '#d4e751',
-                weight: 7,
-                opacity: 0.2,
+                color: '#10b981',
+                weight: 6,
+                opacity: 0.25,
               }}
             />
             <Polyline
               positions={polylineCoords}
               pathOptions={{
-                color: '#d4e751',
-                weight: 3.5,
-                dashArray: '6, 8',
-                opacity: 0.95,
+                color: '#10b981',
+                weight: 3,
+                dashArray: '5, 8',
+                opacity: 0.9,
               }}
             />
           </>
         )}
       </MapContainer>
 
-      {/* Haulix Telemetry Legend Overlay */}
-      <div className="absolute bottom-2.5 right-2.5 z-[400] bg-[#17191d]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-[rgba(255,255,255,0.08)] text-[10px] shadow-xl flex items-center gap-3 text-[#ffffff]">
-        <span className="flex items-center gap-1.5 font-semibold">
-          <span className="w-2 h-2 rounded-full bg-[#d4e751] ring-2 ring-[#d4e751]/30 inline-block animate-pulse" />
-          <span>Transit Hub</span>
+      {/* Map Legend Overlay */}
+      <div className="absolute bottom-2.5 right-2.5 z-[400] bg-[#171a21]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-[#262b36] text-[11px] shadow-lg flex items-center gap-3 text-white">
+        <span className="flex items-center gap-1.5 font-medium">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
+          <span>Pickup Stop</span>
         </span>
-        <span className="flex items-center gap-1.5 font-semibold">
-          <span className="w-2 h-2 rounded-full bg-[#22d3ee] inline-block" />
-          <span>Campus</span>
+        <span className="flex items-center gap-1.5 font-medium">
+          <span className="w-2 h-2 rounded-full bg-sky-400 inline-block" />
+          <span>Campus Gate</span>
         </span>
         {pools.length > 0 && (
-          <span className="font-mono font-bold text-[#d4e751] border-l border-[rgba(255,255,255,0.1)] pl-2">
-            {pools.length} LIVE POOL{pools.length > 1 ? 'S' : ''}
+          <span className="text-emerald-400 font-bold border-l border-[#262b36] pl-2 text-[10px]">
+            {pools.length} open {pools.length === 1 ? 'ride' : 'rides'}
           </span>
         )}
       </div>

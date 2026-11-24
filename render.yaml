@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: autosync-backend
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    healthCheckPath: /api/hubs
+    envVars:
+      - key: NODE_ENV
+        value: production

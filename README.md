@@ -3,34 +3,50 @@
 > **Hyper-Local Smart Mobility Platform for College Campuses**
 > Coordinate shared auto-rickshaw and cab commutes from transit hubs (Metro stations & Bus depots) to campus with atomic seat limits, dynamic UPI settlement, and RTO compliance.
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/vkvarun719/Autosync)
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvkvarun719%2FAutosync)
+
+---
+
+## ⚡ Deploying the Backend on Render (Render.com)
+
+Render provides dedicated Linux web services with native Node.js support and writable persistent environments.
+
+### Option 1: 1-Click Blueprint Deploy
+Click the **[Deploy to Render](https://render.com/deploy?repo=https://github.com/vkvarun719/Autosync)** button above. Render reads the included [`render.yaml`](./render.yaml) automatically and provisions:
+- **Service Name:** `autosync-backend`
+- **Runtime:** `Node`
+- **Build Command:** `npm install && npm run build`
+- **Start Command:** `npm run start` (binds to `0.0.0.0:$PORT`)
+- **Health Check Path:** `/api/hubs`
+
+### Option 2: Manual Web Service in your Render Dashboard
+If you are already in the Render Dashboard (`dashboard.render.com`):
+1. Click **New +** ➡️ **Web Service**.
+2. Connect your GitHub repository: **`vkvarun719/Autosync`**.
+3. Configure the following fields:
+   - **Name:** `autosync-backend` (or `autosync`)
+   - **Region:** Any (e.g. *Oregon (US West)* or *Frankfurt (EU)*)
+   - **Branch:** `main`
+   - **Runtime:** `Node`
+   - **Build Command:** `npm install && npm run build`
+   - **Start Command:** `npm run start`
+   - **Plan:** `Free`
+4. Click **Create Web Service**.
+5. Once deployment is live, your backend and full API endpoints will be accessible at:
+   `https://<your-service-name>.onrender.com/api/hubs`
+
+> **CORS Enabled:** Cross-Origin Resource Sharing (CORS) is enabled across all `/api/*` endpoints. If you host your frontend on Vercel or locally, it can make direct API calls to your Render backend with zero CORS issues!
 
 ---
 
 ## 🚀 Instant Deployment to Vercel (Zero Config)
 
-This repository is optimized to deploy directly to **Vercel** with **0 external credentials or paid API keys required**.
-
-### Option A: 1-Click Web Deploy
+### 1-Click Web Deploy
 1. Click the **[Deploy with Vercel](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvkvarun719%2FAutosync)** button above.
 2. Select your GitHub account and click **Create**.
-3. Vercel will automatically run `npm install` (which executes `postinstall: prisma generate`) and `npm run build`.
+3. Vercel automatically runs `postinstall: prisma generate` and `next build`.
 4. Your application will be live immediately with the bundled, pre-seeded campus transit hubs, drop-off gates, and demo student personas!
-
-### Option B: Deploy via Vercel CLI
-```bash
-# 1. Install Vercel CLI (if not already installed)
-npm i -g vercel
-
-# 2. Deploy from repo root
-vercel
-
-# 3. Deploy to production
-vercel --prod
-```
-
-> **Note on Vercel Serverless Architecture:**  
-> AutoSync automatically detects Vercel's serverless environment at runtime and mirrors the pre-seeded SQLite database to `/tmp/dev.db`, allowing instant write access for creating pools, joining rides, logging license plates, and settling UPI splits without requiring an external database setup.
 
 ---
 
@@ -78,7 +94,7 @@ vercel --prod
 
 - **Framework**: Next.js 16 (App Router) + TypeScript
 - **Styling**: Tailwind CSS (Haulix Logistics Dark Mode Theme)
-- **Database**: SQLite via Prisma ORM (with Vercel serverless `/tmp` bridge)
+- **Database**: SQLite via Prisma ORM (with Vercel serverless `/tmp` bridge & Render persistent support)
 - **Maps**: Leaflet + OpenStreetMap CartoDB Dark Matter tiles (dynamic client import)
 - **Payments**: Dynamic UPI Deep Links + `qrcode.react`
 - **Icons**: `lucide-react`

@@ -2,16 +2,14 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'AutoSync • Haulix Campus Logistics Fleet',
-  description: 'Hyper-local smart campus mobility platform with zero commission, dynamic UPI settlement, and RTO compliance.',
+  title: 'AutoSync • Share the auto. Split the fare.',
+  description: 'Smart campus ride-sharing for college students. Coordinate shared autos and cabs from transit hubs with zero fees and direct UPI splits.',
 }
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-  themeColor: '#0b0c0e',
+  themeColor: '#0f1115',
 }
 
 export default function RootLayout({
@@ -25,7 +23,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
         <link
@@ -35,8 +33,8 @@ export default function RootLayout({
           crossOrigin=""
         />
       </head>
-      <body className="bg-[#0b0c0e] text-[#ffffff] antialiased selection:bg-[#d4e751] selection:text-[#0b0c0e] min-h-screen flex flex-col">
-        <main className="w-full min-h-screen flex flex-col bg-[#0b0c0e]">
+      <body className="bg-[#0f1115] text-[#f1f3f7] antialiased selection:bg-[#10b981] selection:text-[#0f1115] min-h-screen flex flex-col font-sans">
+        <main className="w-full min-h-screen flex flex-col bg-[#0f1115]">
           {children}
         </main>
       </body>

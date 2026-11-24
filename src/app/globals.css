@@ -2,112 +2,61 @@
 
 @layer base {
   :root {
-    --bg-canvas: #0b0c0e;
-    --bg-surface: #121417;
-    --bg-card: #17191d;
-    --bg-card-sub: #1e2127;
-    --bg-inset: #14161a;
-    
-    --border-card: rgba(255, 255, 255, 0.08);
-    --border-elevated: rgba(255, 255, 255, 0.16);
-    
-    --accent-lime: #d4e751;
-    --accent-lime-hover: #e2f163;
-    --accent-cyan: #22d3ee;
-    --accent-amber: #f59e0b;
-    --accent-red: #ef4444;
-    --accent-emerald: #10b981;
-    --accent-violet: #8b5cf6;
-    
-    --text-white: #ffffff;
-    --text-secondary: #8e95a0;
-    --text-muted: #525866;
+    --bg-canvas: #0f1115;
+    --bg-card: #171a21;
+    --bg-card-hover: #1c202a;
+    --bg-subcard: #202530;
+    --border-color: #262b36;
+    --border-hover: #363d4d;
+    --accent: #10b981;
+    --accent-hover: #059669;
+    --text-primary: #f1f3f7;
+    --text-secondary: #9aa1b2;
+    --text-muted: #646c80;
   }
 }
 
 body {
-  background-color: #0b0c0e;
-  background-image: 
-    radial-gradient(circle at 50% 0%, rgba(212, 231, 81, 0.06) 0%, transparent 45%),
-    radial-gradient(circle at 100% 100%, rgba(34, 211, 238, 0.03) 0%, transparent 40%);
-  color: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, "Plus Jakarta Sans", "Inter", sans-serif;
+  background-color: #0f1115;
+  color: #f1f3f7;
+  font-family: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
-}
-
-/* Haulix Card Classes */
-.haulix-card {
-  background-color: #17191d;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 1.25rem;
-  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.6);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.haulix-card:hover {
-  border-color: rgba(255, 255, 255, 0.16);
-  transform: translateY(-1px);
-}
-
-.haulix-subcard {
-  background-color: #1e2127;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 1rem;
-}
-
-/* Haulix Primary Button (Electric Lime) */
-.btn-haulix-lime {
-  background-color: #d4e751;
-  color: #0b0c0e;
-  font-weight: 800;
-  border-radius: 9999px;
-  box-shadow: 0 6px 20px -2px rgba(212, 231, 81, 0.35);
-  transition: all 0.2s ease;
-}
-
-.btn-haulix-lime:hover {
-  background-color: #e2f163;
-  box-shadow: 0 8px 25px -1px rgba(212, 231, 81, 0.5);
-  transform: translateY(-1px);
-}
-
-.btn-haulix-lime:active {
-  transform: translateY(0);
+  line-height: 1.6;
 }
 
 /* Custom Scrollbars */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0b0c0e;
+  background: #0f1115;
 }
 ::-webkit-scrollbar-thumb {
-  background: #242830;
+  background: #262b36;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #d4e751;
+  background: #363d4d;
 }
 
-/* Dark Map Styling for Haulix Fleet Radar */
+/* Leaflet Dark Mode Customization */
 .leaflet-container {
   width: 100%;
   height: 100%;
-  border-radius: 1.25rem;
-  background-color: #15171b !important;
+  border-radius: 1rem;
+  background-color: #12141a !important;
   font-family: inherit !important;
 }
 
 .leaflet-popup-content-wrapper {
-  background: #17191d !important;
-  color: #ffffff !important;
+  background: #171a21 !important;
+  color: #f1f3f7 !important;
   border-radius: 0.75rem !important;
-  border: 1px solid #d4e751 !important;
-  box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.8) !important;
+  border: 1px solid #262b36 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7) !important;
   padding: 0 !important;
 }
 
@@ -117,25 +66,5 @@ body {
 }
 
 .leaflet-popup-tip {
-  background: #17191d !important;
-}
-
-/* Haulix Radar Pulse Animation */
-@keyframes haulix-lime-pulse {
-  0% {
-    transform: scale(0.9);
-    box-shadow: 0 0 0 0 rgba(212, 231, 81, 0.65);
-  }
-  70% {
-    transform: scale(1.05);
-    box-shadow: 0 0 0 14px rgba(212, 231, 81, 0);
-  }
-  100% {
-    transform: scale(0.9);
-    box-shadow: 0 0 0 0 rgba(212, 231, 81, 0);
-  }
-}
-
-.haulix-pulse {
-  animation: haulix-lime-pulse 2.2s infinite ease-out;
+  background: #171a21 !important;
 }
