@@ -35,10 +35,8 @@ export default function RootLayout({
           crossOrigin=""
         />
       </head>
-      <body className="bg-[#0b0c0e] text-[#ffffff] antialiased selection:bg-[#d4e751] selection:text-[#0b0c0e] flex items-center justify-center p-0 sm:py-6">
-        <main className="w-full max-w-md min-h-screen sm:min-h-[850px] sm:rounded-[2.5rem] bg-[#121417] shadow-2xl shadow-black relative overflow-hidden flex flex-col border border-[rgba(255,255,255,0.08)]">
-          {/* Top Haulix Electric Lime Accent Glow */}
-          <div className="hidden sm:block absolute top-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-[#d4e751] to-transparent rounded-full opacity-70 z-50 shadow-sm shadow-[#d4e751]" />
+      <body className="bg-[#0b0c0e] text-[#ffffff] antialiased selection:bg-[#d4e751] selection:text-[#0b0c0e] min-h-screen flex flex-col">
+        <main className="w-full min-h-screen flex flex-col bg-[#0b0c0e]">
           {children}
         </main>
       </body>
