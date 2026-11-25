@@ -83,8 +83,16 @@ export async function sendOtpEmail({ toEmail, otp }: SendOtpParams): Promise<{ s
         from: `AutoSync RVITM <${smtpUser}>`,
         replyTo: smtpUser,
         to: cleanEmail,
-        subject,
-        text: `Your AutoSync RVITM 6-digit access code is: ${otp}\n\nThis code is valid for 10 minutes.\nIf you did not request this login, please ignore this email.`,
+        subject: `🔐 Your AutoSync Login Code: ${otp}`,
+        priority: 'high',
+        headers: {
+          'X-Priority': '1',
+          'X-MSMail-Priority': 'High',
+          'Importance': 'High',
+          'X-Mailer': 'AutoSync RVITM Mailer',
+          'List-Unsubscribe': `<mailto:${smtpUser}?subject=unsubscribe>`
+        },
+        text: `Hi there!\n\nYour AutoSync RVITM login code is:\n\n${otp}\n\nThis code is valid for 10 minutes.\n\nDo not share this code with anyone.\nIf you did not request this, ignore this email.\n\n- AutoSync RVITM Team`,
         html: htmlContent
       })
 
