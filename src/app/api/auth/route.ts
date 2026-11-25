@@ -3,8 +3,63 @@ import { prisma } from '@/lib/prisma'
 import crypto from 'crypto'
 import { sendOtpEmail } from '@/lib/email'
 
+export const runtime = 'nodejs'
+
+const OTP_CHALLENGE_COOKIE = 'autosync_otp_challenge'
+
 function getAllowedDomain(): string {
   return (process.env.ALLOWED_EMAIL_DOMAIN || 'rvei.edu.in').toLowerCase().trim()
+}
+
+function getOtpSigningSecret(): string {
+  return (
+    process.env.AUTH_SECRET ||
+    process.env.SMTP_PASS ||
+    process.env.RESEND_API_KEY ||
+    'autosync-rvitm-2026-otp-secret'
+  )
+}
+
+function createOtpChallengeToken(email: string, otp: string, expiresAtMs: number): string {
+  const secret = getOtpSigningSecret()
+  const salt = crypto.randomBytes(16).toString('hex')
+  const digest = crypto
+    .createHmac('sha256', secret)
+    .update(`${salt}:${email}:${otp}:${expiresAtMs}`)
+    .digest('hex')
+  const payloadB64 = Buffer.from(
+    JSON.stringify({ email, expiresAt: expiresAtMs, salt, digest })
+  ).toString('base64url')
+  const sig = crypto.createHmac('sha256', secret).update(payloadB64).digest('hex')
+  return `${payloadB64}.${sig}`
+}
+
+function verifyOtpChallengeToken(token: string | undefined, email: string, otp: string): boolean {
+  if (!token || !token.includes('.')) return false
+  try {
+    const [payloadB64, sig] = token.split('.')
+    if (!payloadB64 || !sig) return false
+    const secret = getOtpSigningSecret()
+    const expectedSig = crypto.createHmac('sha256', secret).update(payloadB64).digest('hex')
+    if (sig.length !== expectedSig.length) return false
+    if (!crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expectedSig))) return false
+
+    const parsed = JSON.parse(Buffer.from(payloadB64, 'base64url').toString('utf8'))
+    if (parsed.email !== email || typeof parsed.expiresAt !== 'number' || Date.now() > parsed.expiresAt) {
+      return false
+    }
+
+    const expectedDigest = crypto
+      .createHmac('sha256', secret)
+      .update(`${parsed.salt}:${email}:${otp}:${parsed.expiresAt}`)
+      .digest('hex')
+    if (typeof parsed.digest !== 'string' || parsed.digest.length !== expectedDigest.length) {
+      return false
+    }
+    return crypto.timingSafeEqual(Buffer.from(parsed.digest), Buffer.from(expectedDigest))
+  } catch {
+    return false
+  }
 }
 
 export function isValidRvitmEmail(email: string): boolean {
@@ -73,9 +128,10 @@ export async function POST(req: NextRequest) {
 
       // Generate secure 6-digit OTP
       const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString()
-      const expiresAt = new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
+      const expiresAtMs = Date.now() + 10 * 60 * 1000 // 10 minutes
+      const expiresAt = new Date(expiresAtMs)
 
-      await prisma.otpVerification.create({
+      const otpRecord = await prisma.otpVerification.create({
         data: {
           email: cleanEmail,
           otp: generatedOtp,
@@ -83,24 +139,39 @@ export async function POST(req: NextRequest) {
         }
       })
 
-      // Dispatch OTP via live email service (Resend / SMTP) or console fallback
+      // Dispatch OTP directly to the target email via live email service
       const dispatch = await sendOtpEmail({
         toEmail: cleanEmail,
         otp: generatedOtp
       })
 
       if (!dispatch.success) {
+        await prisma.otpVerification.delete({ where: { id: otpRecord.id } }).catch(() => {})
         return NextResponse.json(
           { error: dispatch.error || 'Failed to dispatch email. Please verify the address and try again.' },
           { status: 500 }
         )
       }
 
-      return NextResponse.json({
+      const isHttps =
+        req.nextUrl.protocol === 'https:' || req.headers.get('x-forwarded-proto') === 'https'
+      const challengeToken = createOtpChallengeToken(cleanEmail, generatedOtp, expiresAtMs)
+
+      const response = NextResponse.json({
         success: true,
-        message: `Live 6-digit access code sent to ${cleanEmail}. Please check your inbox (and spam/junk)!`,
+        message: `Live 6-digit access code sent to ${cleanEmail}. Please check your inbox (and Spam/Updates folder)!`,
         provider: dispatch.provider
       })
+
+      response.cookies.set(OTP_CHALLENGE_COOKIE, challengeToken, {
+        httpOnly: true,
+        secure: isHttps,
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 10 * 60
+      })
+
+      return response
     }
 
     // 2. Verify OTP Action & Session Creation
@@ -119,7 +190,7 @@ export async function POST(req: NextRequest) {
         )
       }
 
-      // Verify OTP against active database records
+      // Verify OTP against active database records OR signed stateless challenge cookie (serverless-safe)
       const verificationRecord = await prisma.otpVerification.findFirst({
         where: {
           email: cleanEmail,
@@ -129,17 +200,22 @@ export async function POST(req: NextRequest) {
         orderBy: { createdAt: 'desc' }
       })
 
-      if (!verificationRecord) {
+      const challengeCookie = req.cookies.get(OTP_CHALLENGE_COOKIE)?.value
+      const challengeValid = verifyOtpChallengeToken(challengeCookie, cleanEmail, cleanOtp)
+
+      if (!verificationRecord && !challengeValid) {
         return NextResponse.json(
           { error: 'Invalid or expired OTP. Please check and try again.' },
           { status: 400 }
         )
       }
 
-      // Clean up used OTP
-      await prisma.otpVerification.delete({
-        where: { id: verificationRecord.id }
-      }).catch(() => {})
+      // Clean up used OTP records
+      if (verificationRecord) {
+        await prisma.otpVerification.delete({
+          where: { id: verificationRecord.id }
+        }).catch(() => {})
+      }
 
       // Find or create RVITM student user
       let user = await prisma.user.findUnique({ where: { email: cleanEmail } })
@@ -148,7 +224,9 @@ export async function POST(req: NextRequest) {
         const prefix = cleanEmail.split('@')[0]
         const usnCandidate = prefix.split('.')[0]
         const rollId = usnCandidate.toUpperCase()
-        const formattedName = rollId.startsWith('RVIT') ? `Student ${rollId}` : 'RVITM Student'
+        const formattedName = rollId.startsWith('RVIT')
+          ? `Student ${rollId}`
+          : `${prefix} (RVITM)`
 
         user = await prisma.user.create({
           data: {
@@ -174,6 +252,9 @@ export async function POST(req: NextRequest) {
         }
       })
 
+      const isHttps =
+        req.nextUrl.protocol === 'https:' || req.headers.get('x-forwarded-proto') === 'https'
+
       const response = NextResponse.json({
         success: true,
         user: {
@@ -185,13 +266,20 @@ export async function POST(req: NextRequest) {
         }
       })
 
-      // Set httpOnly session cookie
+      // Set httpOnly session cookie and clear OTP challenge cookie
       response.cookies.set('autosync_session', sessionToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: isHttps,
         sameSite: 'lax',
         path: '/',
         maxAge: 7 * 24 * 60 * 60 // 7 days
+      })
+      response.cookies.set(OTP_CHALLENGE_COOKIE, '', {
+        httpOnly: true,
+        secure: isHttps,
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 0
       })
 
       return response
@@ -234,9 +322,12 @@ export async function POST(req: NextRequest) {
         user
       })
 
+      const isHttps =
+        req.nextUrl.protocol === 'https:' || req.headers.get('x-forwarded-proto') === 'https'
+
       response.cookies.set('autosync_session', sessionToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: isHttps,
         sameSite: 'lax',
         path: '/',
         maxAge: 7 * 24 * 60 * 60

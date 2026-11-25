@@ -455,25 +455,10 @@ export default function LandingPage() {
               </button>
               <button
                 type="button"
-                onClick={() => { setActiveTab('login'); setErrorMessage(''); }}
-                className={`flex-1 py-2 rounded-lg transition-all duration-150 ${
-                  activeTab === 'login'
-                    ? 'bg-emerald-500 text-[#0f1115] font-bold shadow-xs'
-                    : 'text-[#9aa1b2] hover:text-white'
-                }`}
+                onClick={() => router.push('/login')}
+                className="flex-1 py-2 rounded-lg transition-all duration-150 text-[#9aa1b2] hover:text-white"
               >
-                <span>Login</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => { setActiveTab('register'); setErrorMessage(''); }}
-                className={`flex-1 py-2 rounded-lg transition-all duration-150 ${
-                  activeTab === 'register'
-                    ? 'bg-emerald-500 text-[#0f1115] font-bold shadow-xs'
-                    : 'text-[#9aa1b2] hover:text-white'
-                }`}
-              >
-                <span>Register</span>
+                <span>Student OTP Login</span>
               </button>
             </div>
 

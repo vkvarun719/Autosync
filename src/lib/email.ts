@@ -63,16 +63,23 @@ export async function sendOtpEmail({ toEmail, otp }: SendOtpParams): Promise<{ s
     </html>
   `
 
-  // 1. Try Nodemailer Gmail SMTP if configured (Sends directly to ANY recipient email without sandbox limits)
   const smtpUser = process.env.SMTP_USER?.trim()
   const smtpPass = process.env.SMTP_PASS?.replace(/\s+/g, '').trim()
+  const resendApiKey = process.env.RESEND_API_KEY?.trim()
 
+  let smtpError: string | undefined
+  let resendError: string | undefined
+
+  // 1. Try Nodemailer Gmail SMTP if configured (Sends directly to ANY target email)
   if (smtpUser && smtpPass) {
     try {
       const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
         secure: true,
+        connectionTimeout: 8000,
+        greetingTimeout: 8000,
+        socketTimeout: 12000,
         auth: {
           user: smtpUser,
           pass: smtpPass
@@ -83,98 +90,67 @@ export async function sendOtpEmail({ toEmail, otp }: SendOtpParams): Promise<{ s
         from: `AutoSync RVITM <${smtpUser}>`,
         replyTo: smtpUser,
         to: cleanEmail,
-        subject: `🔐 Your AutoSync Login Code: ${otp}`,
-        priority: 'high',
-        headers: {
-          'X-Priority': '1',
-          'X-MSMail-Priority': 'High',
-          'Importance': 'High',
-          'X-Mailer': 'AutoSync RVITM Mailer',
-          'List-Unsubscribe': `<mailto:${smtpUser}?subject=unsubscribe>`
-        },
-        text: `Hi there!\n\nYour AutoSync RVITM login code is:\n\n${otp}\n\nThis code is valid for 10 minutes.\n\nDo not share this code with anyone.\nIf you did not request this, ignore this email.\n\n- AutoSync RVITM Team`,
+        subject,
+        text: `Your AutoSync RVITM 6-digit access code is: ${otp}\n\nThis code is valid for 10 minutes.\nDo not share this code with anyone.\nIf you did not request this login, you can ignore this email.\n\n- AutoSync RVITM`,
         html: htmlContent
       })
 
       console.log(`\n======================================================`)
-      console.log(`[EMAIL DISPATCHED] Live OTP sent to target student ${cleanEmail} via Gmail SMTP!`)
+      console.log(`[EMAIL DISPATCHED] Live OTP sent directly to ${cleanEmail} via Gmail SMTP!`)
       console.log(`[Message ID]: ${info.messageId}`)
       console.log(`======================================================\n`)
       return { success: true, provider: 'smtp' }
-    } catch (err: any) {
-      console.error('[SMTP Email Error]:', err.message)
+    } catch (err: unknown) {
+      smtpError = err instanceof Error ? err.message : 'SMTP dispatch failed'
+      console.error('[SMTP Email Error]:', smtpError)
     }
   }
 
-  // 2. Try Resend if RESEND_API_KEY is configured
-  const resendApiKey = process.env.RESEND_API_KEY?.trim()
+  // 2. Try Resend ONLY directly to the target student email (never redirect to admin email)
   if (resendApiKey && resendApiKey.startsWith('re_')) {
     try {
       const resend = new Resend(resendApiKey)
       const fromEmail = process.env.RESEND_FROM_EMAIL || 'AutoSync RVITM <onboarding@resend.dev>'
 
-      let result = await resend.emails.send({
+      const result = await resend.emails.send({
         from: fromEmail,
         to: cleanEmail,
         subject,
+        text: `Your AutoSync RVITM 6-digit access code is: ${otp}\n\nThis code is valid for 10 minutes.`,
         html: htmlContent
       })
 
       if (result.error) {
-        console.warn(`[Resend Sandbox Notice]: ${result.error.message}`)
-
-        // If in Resend Sandbox mode (can only send to verified account email vkvarun719@gmail.com)
-        const match = result.error.message.match(/your own email address \(([^)]+)\)/i)
-        const fallbackRecipient = match ? match[1] : 'vkvarun719@gmail.com'
-
-        if (fallbackRecipient && fallbackRecipient.toLowerCase() !== cleanEmail) {
-          console.log(`[Resend Sandbox] Forwarding live OTP for ${cleanEmail} to your verified email: ${fallbackRecipient}`)
-          const fallbackRes = await resend.emails.send({
-            from: fromEmail,
-            to: fallbackRecipient,
-            subject: `[AutoSync RVITM] Access Code for ${cleanEmail}: ${otp}`,
-            html: `
-              <div style="background-color: #0f1115; color: #f1f3f7; padding: 24px; font-family: sans-serif; border-radius: 12px; border: 1px solid #10b981;">
-                <p style="color: #10b981; font-weight: bold; margin-top: 0;">🚀 AutoSync RVITM Live OTP Dispatch</p>
-                <p>A student login was requested for: <strong style="color: #ffffff;">${cleanEmail}</strong></p>
-                <div style="background-color: #171a21; border: 1px solid #262b36; border-radius: 8px; padding: 16px; text-align: center; margin: 16px 0;">
-                  <span style="font-size: 32px; font-weight: bold; letter-spacing: 6px; color: #ffffff; font-family: monospace;">${otp}</span>
-                </div>
-                <p style="font-size: 12px; color: #9aa1b2;">Expires in 10 minutes. Delivered via Resend to ${fallbackRecipient}.</p>
-              </div>
-            `
-          })
-
-          if (!fallbackRes.error) {
-            console.log(`[EMAIL DISPATCHED] Live email delivered to ${fallbackRecipient} (ID: ${fallbackRes.data?.id})`)
-            return {
-              success: true,
-              provider: 'resend_forwarded',
-              message: `Live email dispatched to ${fallbackRecipient} for student ${cleanEmail}`
-            }
-          }
-        }
-
-        console.warn(`[AutoSync OTP for ${cleanEmail}]: ${otp}\n`)
-        return { success: true, provider: 'resend_sandbox', error: result.error.message }
+        resendError = result.error.message
+        console.warn(`[Resend Notice for ${cleanEmail}]: ${resendError}`)
       } else {
         console.log(`\n======================================================`)
-        console.log(`[EMAIL DISPATCHED] Live OTP sent to ${cleanEmail} via Resend (ID: ${result.data?.id})`)
+        console.log(`[EMAIL DISPATCHED] Live OTP sent directly to ${cleanEmail} via Resend (ID: ${result.data?.id})`)
         console.log(`======================================================\n`)
         return { success: true, provider: 'resend' }
       }
-    } catch (err: any) {
-      console.warn('[Resend Exception]:', err.message)
+    } catch (err: unknown) {
+      resendError = err instanceof Error ? err.message : 'Resend exception'
+      console.warn('[Resend Exception]:', resendError)
     }
   }
 
+  // 3. Honest failure diagnostic — never pretend email succeeded or redirect to another user
+  let errorDetail = 'Email delivery failed.'
+  if (!smtpUser || !smtpPass) {
+    errorDetail = resendError
+      ? `Resend cannot send to ${cleanEmail} without a verified domain (${resendError}). Also SMTP_USER/SMTP_PASS are not configured on this server.`
+      : 'SMTP_USER and SMTP_PASS are not configured on this server. Add them to Environment Variables in Vercel/Render or .env.local.'
+  } else if (smtpError && /ETIMEDOUT|ECONNREFUSED|ENOTFOUND|timeout/i.test(smtpError)) {
+    errorDetail = `SMTP connection timed out (${smtpError}). Note: Render Free Tier blocks SMTP ports 465/587 — deploy on Vercel or localhost for Gmail SMTP.`
+  } else if (smtpError) {
+    errorDetail = `Gmail SMTP error: ${smtpError}`
+  }
 
-
-  // 3. Fallback: Log to Server Console
-  console.log(`\n======================================================`)
-  console.log(`[LOCAL DEV DISPATCH] OTP for ${cleanEmail}: ${otp}`)
-  console.log(`[TIP] Set RESEND_API_KEY or SMTP_USER/SMTP_PASS in .env.local to send live emails.`)
-  console.log(`======================================================\n`)
-
-  return { success: true, provider: 'console_fallback' }
+  console.error(`[EMAIL FAILED] Could not send OTP to ${cleanEmail}: ${errorDetail}`)
+  return {
+    success: false,
+    provider: 'none',
+    error: errorDetail
+  }
 }
